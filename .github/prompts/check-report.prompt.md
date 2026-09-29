@@ -49,10 +49,7 @@ Tu es correcteur. Tu compares un livrable de rétro-documentation du module Snak
    `affichage` ou `doublon`. Signale à part toute règle qui **contredit** le
    référentiel (valeur, unité, condition ou résultat différents) : c'est une
    règle fausse.
-5. **Noms de code.** Compte les énoncés qui contiennent un nom de code : nom en
-   camelCase ou en MAJUSCULES_SOULIGNÉES, nom de fonction, parenthèses d'appel,
-   mot entre accents graves. Les sources ne comptent pas.
-6. **Anomalies.** Pour chaque anomalie A1 à A4 du référentiel, dis si le livrable
+5. **Anomalies.** Pour chaque anomalie A1 à A4 du référentiel, dis si le livrable
    la signale (dans ses anomalies ou ses points à confirmer) et où. Une règle qui
    décrit le comportement sans le signaler comme anomalie ne compte pas. Liste
    ensuite les autres anomalies du livrable, en précisant si elles figurent parmi
@@ -72,7 +69,6 @@ Un bloc de code markdown contenant exactement ce tableau, avec une colonne par l
     | Règles importantes retrouvées, sur 31 | <n> |
     | Règles partielles (non comptées) | <n> |
     | Sources exactes, sur 31 | <n> |
-    | Énoncés avec un nom de code | <n> sur <nombre brut> |
     | Règles fausses (contredisent le référentiel) | <n> |
     | Anomalies signalées, sur 4 | <n> |
     | Crédits IA consommés | à compléter |
