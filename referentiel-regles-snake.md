@@ -12,14 +12,14 @@ Sources : chemins relatifs à la racine du dépôt.
 | # | Règle | Source |
 |---|---|---|
 | R01 | La grille fait 30 colonnes sur 20 lignes. | logic.ts L35-L36 |
-| R02 | Le serpent démarre avec 3 cases, tête au centre (colonne 15, ligne 10), corps vers la gauche, et part vers la droite. | logic.ts L89-L98 |
+| R02 | Le serpent démarre avec 3 cases, tête au centre de la grille, corps vers la gauche, et part vers la droite. | logic.ts L89-L98 |
 | R03 | La pomme est placée au hasard sur une case libre (non occupée par le serpent). | logic.ts L77-L87 |
-| R04 | Une partie commence avec un score de 0, aucune pomme mangée et 130 ms entre deux pas. | logic.ts L38, L101-L106 |
+| R04 | Une partie commence avec un score de 0, aucune pomme mangée et un délai de base de 130 ms entre deux pas. | logic.ts L38, L101-L106 |
 
 ## Déplacement et virages
 | # | Règle | Source |
 |---|---|---|
-| R05 | Le serpent avance d'une case à chaque pas ; un pas a lieu quand le délai courant est écoulé depuis le précédent. | logic.ts L120-L125, L130 ; index.ts L106, L145-L147 |
+| R05 | Le serpent avance d'une case à chaque pas ; un pas a lieu quand le délai courant, multiplié par le facteur de lenteur du thème (×10 en thème sobre, le thème par défaut ; ×1 en néon), est écoulé depuis le précédent. | logic.ts L120-L125, L130 ; index.ts L106, L145-L147 |
 | R06 | Au plus 2 virages peuvent être demandés d'avance ; au-delà, la demande est ignorée. | logic.ts L43, L112 |
 | R07 | Demander la direction déjà prise (ou déjà demandée en dernier) est ignoré. | logic.ts L114-L115 |
 | R08 | Un demi-tour est ignoré. | logic.ts L52-L57, L114-L115 |
@@ -31,7 +31,7 @@ Sources : chemins relatifs à la racine du dépôt.
 |---|---|---|
 | R11 | Sortir de la grille termine la partie (cause : mur). On ne traverse pas les bords. | logic.ts L73-L75, L137-L139 |
 | R12 | Entrer sur une case occupée par le corps termine la partie (cause : morsure). | logic.ts L140-L142 |
-| R13 | La case que la queue quitte pendant le pas compte comme libre : le serpent peut y avancer sans se mordre. Quand il mange, la queue ne bouge pas, mais la pomme n'est jamais posée sur le corps : manger ne peut pas provoquer de morsure. | logic.ts L134-L135, L140 |
+| R13 | La case que la queue quitte pendant le pas compte comme libre : le serpent peut y avancer sans se mordre, sauf quand il mange (la queue reste alors en place). | logic.ts L134-L135, L140 |
 | R14 | Le mur est testé avant la morsure. | logic.ts L137-L142 |
 | R15 | Quand il ne reste aucune case libre pour une nouvelle pomme, la partie se termine (cause : grille complète). | logic.ts L85, L148, L157-L158 |
 
@@ -39,8 +39,8 @@ Sources : chemins relatifs à la racine du dépôt.
 | # | Règle | Source |
 |---|---|---|
 | R16 | Manger une pomme fait grandir le serpent d'une case ; sinon sa longueur ne change pas. | logic.ts L131, L135, L144-L145 |
-| R17 | Chaque pomme rapporte 100 points, sans bonus ni multiplicateur. | logic.ts L37, L155 |
-| R18 | Après chaque pomme, le délai entre deux pas vaut 130 − 3 × (pommes mangées) ms, sans descendre sous 55 ms : le plancher est atteint à la 25e pomme. | logic.ts L38-L42, L156 |
+| R17 | Chaque pomme rapporte 100 points. | logic.ts L37, L155 |
+| R18 | Après chaque pomme, le délai de base entre deux pas vaut 130 − 3 × (pommes mangées) ms, sans descendre sous 55 ms. | logic.ts L38-L42, L156 |
 | R19 | Une nouvelle pomme apparaît aussitôt, sur une case libre. | logic.ts L148, L157 |
 | R20 | La durée d'une partie est mesurée en millisecondes, de la création de la partie au dernier pas (pas fatal compris). | logic.ts L67-L71, L104-L105, L132 |
 
@@ -55,8 +55,8 @@ Sources : chemins relatifs à la racine du dépôt.
 | R26 | La saisie du pseudo est proposée 1 100 ms après la fin de partie. | index.ts L23, L87 |
 | R27 | La saisie du pseudo n'est proposée que si le score est strictement positif ; elle est pré-remplie avec le dernier joueur. | index.ts L90-L91 |
 | R28 | Si le joueur valide un pseudo : le score et sa durée entrent au tableau de l'arcade, il devient le dernier joueur, il entre au classement local et le record local est remplacé s'il est battu. S'il passe la saisie, rien de tout cela n'est enregistré. | index.ts L93-L98 |
-| R29 | Si le joueur quitte le jeu pendant la pause de fin ou la saisie, le score n'est pas enregistré au tableau. | index.ts L88, L92, L139 |
-| R30 | Après la fin de partie, « ENTRÉE REJOUER · ÉCHAP MENU » s'affiche ; Entrée ne relance une partie qu'une fois ce message affiché. | index.ts L24, L100, L125-L130 |
+| R29 | Si le joueur quitte le jeu pendant la pause de 1 100 ms qui suit la fin de partie, le score n'est pas enregistré au tableau. | index.ts L87-L88, L92, L139 |
+| R30 | Après la fin de partie, un message invite à rejouer une fois la saisie du pseudo terminée (validée ou passée) ou sautée (score nul) ; Entrée ne relance une partie qu'une fois ce message affiché. | index.ts L24, L100, L125-L130 |
 | R31 | Pendant la partie, les flèches orientent le serpent et Entrée n'a aucun effet. | index.ts L124-L133 |
 
 Fichiers : `logic.ts` et `index.ts` sont dans `src/games/snake/`.
@@ -71,4 +71,4 @@ Une anomalie compte si le livrable la signale, dans ses anomalies ou dans ses po
 | A3 | Deux systèmes de scores coexistent (le tableau de l'arcade et l'ancien stockage « legacy ») ; le record affiché en jeu combine les deux. Risque d'incohérence. | index.ts L5-L17, L67-L70 |
 | A4 | Une partie abandonnée compte comme partie jouée, car le compteur est incrémenté au lancement. | index.ts L66 |
 
-Non comptées, mais justes si elles sont signalées : la grille complète, seule issue victorieuse, est traitée comme une défaite (son « perdu ») ; en thème sobre (le thème par défaut), le délai entre deux pas est multiplié par 10 (1 300 ms au départ, 550 ms au plus rapide ; shell/menu.ts L546, shell/theme.ts L13), mais pas le compte à rebours ; les valeurs en dur (130 ms, 55 ms, 3 ms, 100 points, 1 500 ms, 1 100 ms, 2 virages, facteur 10) mériteraient d'être paramétrables.
+Non comptées, mais justes si elles sont signalées : la grille complète, seule issue victorieuse, est traitée comme une défaite (son « perdu ») ; en thème sobre, le serpent est ralenti d'un facteur 10 mais pas le compte à rebours ; les valeurs en dur (130 ms, 55 ms, 3 ms, 100 points, 1 500 ms, 1 100 ms, 2 virages, facteur 10) mériteraient d'être paramétrables.
