@@ -1,0 +1,9 @@
+{
+  // Les recherches (celles des agents comme la vôtre) ignorent ces fichiers.
+  // Ils restent visibles et modifiables dans l'explorateur.
+  "search.exclude": {
+    "**/NOTES-TP.md": true,
+    "**/referentiel-regles-snake.md": true,
+    "**/règles-métier*.md": true
+  }
+}

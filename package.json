@@ -1,0 +1,22 @@
+{
+  "name": "arcade",
+  "version": "1.0.0",
+  "description": "Arcade rétro dans le navigateur.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest run",
+    "lint": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.7",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.6",
+    "vitest": "^4.1.11"
+  }
+}

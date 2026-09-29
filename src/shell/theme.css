@@ -1,0 +1,56 @@
+/* Sélecteur de thème flottant, discret dans les deux thèmes. */
+
+.bascule-theme {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--sobre-bord);
+  border-radius: 999px;
+  background: var(--sobre-panneau);
+  font:
+    500 12px / 1 'Segoe UI',
+    system-ui,
+    -apple-system,
+    Arial,
+    sans-serif;
+  opacity: 0.65;
+  transition: opacity 150ms;
+}
+
+.bascule-theme:hover {
+  opacity: 1;
+}
+
+.bascule-theme__option {
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  color: var(--sobre-discret);
+  cursor: pointer;
+}
+
+.bascule-theme__option[aria-pressed='true'] {
+  color: var(--sobre-texte);
+  background: var(--sobre-page);
+  cursor: default;
+}
+
+:root[data-theme='neon'] .bascule-theme {
+  border-color: rgba(255, 46, 151, 0.35);
+  background: rgba(12, 6, 24, 0.8);
+}
+
+:root[data-theme='neon'] .bascule-theme__option {
+  color: #bfb3d6;
+}
+
+:root[data-theme='neon'] .bascule-theme__option[aria-pressed='true'] {
+  color: var(--salle-nuit);
+  background: var(--neon-rose);
+}
