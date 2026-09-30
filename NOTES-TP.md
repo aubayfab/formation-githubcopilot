@@ -133,7 +133,8 @@ Problèmes rencontrés :
 Problèmes rencontrés :
 
 # TP N°11 – Des scripts sur évènements
-> Quels sont les types de hooks utilisés ?
+
+> Quels évènements déclenchent les hooks ?
 
 > Comment est architecturé le hook ?
 
