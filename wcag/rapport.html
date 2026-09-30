@@ -343,8 +343,9 @@
       <h1>Rapport de contraste WCAG</h1>
       <p class="intro">
         Déposez un ou plusieurs rapports JSON produits par <code>contraste.mjs scan</code> ou
-        <code>corriger.mjs</code>. Le premier déposé sert de référence (en pratique « Avant ») ; les
-        suivants lui sont comparés paire par paire.
+        <code>corriger.mjs</code>, ou générez cette page déjà remplie avec
+        <code>node contraste.mjs page avant.json apres.json --ouvrir</code>. Le premier rapport sert
+        de référence (en pratique « Avant ») ; les suivants lui sont comparés paire par paire.
       </p>
       <label class="depot" id="depot">
         <span>Glissez-déposez vos rapports ici, ou choisissez des fichiers.</span>
@@ -378,6 +379,8 @@
         </details>
       </div>
     </main>
+    <!-- Rempli par « node contraste.mjs page » : [{ "nom": "avant.json", "rapport": {…} }, …] -->
+    <script type="application/json" id="rapports-integres"></script>
     <script>
       (function () {
         'use strict';
@@ -529,11 +532,42 @@
           return null;
         }
 
+        // Lit le bloc de données intégrées écrit par « contraste.mjs page » : { rapports, erreur }.
+        // Chaque rapport est ensuite validé au chargement, comme un fichier déposé.
+        function lireRapportsIntegres(texte) {
+          const brut = (texte || '').trim();
+          if (!brut) return { rapports: [], erreur: null };
+          let donnees;
+          try {
+            donnees = JSON.parse(brut);
+          } catch (erreur) {
+            return {
+              rapports: [],
+              erreur: 'données intégrées illisibles (' + erreur.message + ')',
+            };
+          }
+          if (!Array.isArray(donnees)) {
+            return {
+              rapports: [],
+              erreur: 'données intégrées : un tableau de rapports était attendu',
+            };
+          }
+          const rapports = donnees.map((entree, index) => ({
+            nom:
+              entree && typeof entree.nom === 'string'
+                ? entree.nom
+                : 'rapport intégré ' + (index + 1),
+            rapport: entree ? entree.rapport : null,
+          }));
+          return { rapports, erreur: null };
+        }
+
         if (typeof module !== 'undefined' && module.exports) {
           module.exports = {
             versOklab,
             deltaE,
             validerRapport,
+            lireRapportsIntegres,
             apparier,
             compterChanges,
             ensembleCommun,
@@ -571,6 +605,16 @@
           );
         }
 
+        function chargerRapport(nom, objet) {
+          const validation = validerRapport(objet);
+          if (!validation.ok) {
+            signalerErreur(nom, validation.erreur);
+            return false;
+          }
+          rapports.push({ nom, rapport: objet });
+          return true;
+        }
+
         async function chargerFichiers(liste) {
           $('erreurs').replaceChildren();
           for (const fichier of Array.from(liste)) {
@@ -581,14 +625,18 @@
               signalerErreur(fichier.name, 'JSON invalide (' + erreur.message + ')');
               continue;
             }
-            const validation = validerRapport(objet);
-            if (!validation.ok) {
-              signalerErreur(fichier.name, validation.erreur);
-              continue;
-            }
-            rapports.push({ nom: fichier.name, rapport: objet });
+            chargerRapport(fichier.name, objet);
           }
           rendre();
+        }
+
+        // Rapports intégrés à la page par « contraste.mjs page », chargés dans l'ordre au démarrage.
+        function chargerIntegres() {
+          const bloc = $('rapports-integres');
+          const integres = lireRapportsIntegres(bloc ? bloc.textContent : '');
+          if (integres.erreur) signalerErreur('Données intégrées', integres.erreur);
+          for (const { nom, rapport } of integres.rapports) chargerRapport(nom, rapport);
+          if (integres.erreur || integres.rapports.length) rendre();
         }
 
         function rendreCharges() {
@@ -942,6 +990,7 @@
               : 'Afficher toutes les paires';
             rendrePaires();
           });
+          chargerIntegres();
         }
 
         demarrer();

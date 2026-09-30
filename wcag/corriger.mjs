@@ -760,6 +760,9 @@ Options :
                         avec la liste « corrections »), même sans --ecrire.
   --sans-couleur        Désactive les couleurs ANSI (comme la variable NO_COLOR).
 
+Pour comparer les rapports avant/après dans le navigateur :
+  node contraste.mjs page avant.json apres.json --ouvrir
+
 Méthode :
   Pour chaque texte en échec, la couleur conforme la plus proche (ΔE OKLab) est cherchée en
   OKLCH : teinte conservée, luminosité déplacée dans les deux sens, chroma réduite seulement

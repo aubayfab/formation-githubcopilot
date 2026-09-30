@@ -11,9 +11,10 @@
  * Aucune dépendance, Node 20.19 ou plus récent.
  */
 
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve as resoudreChemin } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { spawn } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join, resolve as resoudreChemin } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const VERSION_RAPPORT = 1;
 export const NOM_OUTIL = 'wcag-contraste';
@@ -1769,6 +1770,7 @@ const AIDE = `contraste.mjs — contrastes WCAG 2.x d'un ou plusieurs fichiers C
 Usage :
   node contraste.mjs ratio <texte> <fond>
   node contraste.mjs scan <fichier.css>... [options]
+  node contraste.mjs page <rapport.json>... [options]
   node contraste.mjs --aide
 
 Commandes :
@@ -1776,6 +1778,8 @@ Commandes :
           Le fond doit être opaque ; un texte semi-transparent est composé sur le fond.
   scan    Analyse chaque règle qui déclare une couleur de texte et un fond, dans chaque contexte
           (thème, media query) qui la concerne, puis affiche le tableau du pire au moins grave.
+  page    Écrit une copie de rapport.html déjà remplie avec les rapports JSON donnés (le premier
+          est la référence, en pratique « Avant ») et, avec --ouvrir, l'ouvre dans le navigateur.
 
 Options de scan :
   --niveau AA|AAA       Niveau visé (AA par défaut : 4,5 texte courant, 3 grand texte ; AAA : 7 / 4,5).
@@ -1784,7 +1788,16 @@ Options de scan :
   --details             Détaille les paires « à vérifier » et les règles au fond inconnu.
   --sans-couleur        Désactive les couleurs ANSI (comme la variable NO_COLOR).
 
-Codes de sortie : 0 aucun échec, 1 au moins un échec, 2 erreur d'usage ou de lecture.
+Options de page :
+  --sortie <page.html>  Page à écrire (par défaut rapport-contraste.html à côté du premier rapport ;
+                        le dossier est créé au besoin).
+  --modele <fichier>    Modèle de page. Sinon : rapport.html à côté du script, puis ../assets/rapport.html.
+  --ouvrir              Ouvre la page dans le navigateur par défaut, sans bloquer. Avec la variable
+                        d'environnement CONTRASTE_SANS_OUVRIR=1, affiche la commande au lieu de la lancer.
+
+Codes de sortie :
+  scan : 0 aucun échec, 1 au moins un échec, 2 erreur d'usage ou de lecture.
+  page : 0 page écrite, 2 erreur (rapport illisible ou invalide, modèle introuvable, aucun rapport).
 
 Limites connues :
 ${LIMITES.map((l) => `  ${l}`).join('\n')}
@@ -1813,8 +1826,12 @@ export function analyserArgumentsCli(argv) {
     } else if (arg === '--sortie') {
       options.sortie = args.shift();
       if (!options.sortie) throw new Error('--sortie attend un chemin');
+    } else if (arg === '--modele') {
+      options.modele = args.shift();
+      if (!options.modele) throw new Error('--modele attend un chemin');
     } else if (arg === '--details') options.details = true;
     else if (arg === '--ecrire') options.ecrire = true;
+    else if (arg === '--ouvrir') options.ouvrir = true;
     else if (arg === '--sans-couleur') options.sansCouleur = true;
     else if (arg.startsWith('--')) throw new Error(`option inconnue : ${arg}`);
     else options.fichiers.push(arg);
@@ -1913,6 +1930,172 @@ function commandeScan(args, sortie) {
   return rapport.resume.echecs > 0 ? 1 : 0;
 }
 
+// ---------------------------------------------------------------------------
+// Commande page : rapport.html rempli avec des rapports JSON
+// ---------------------------------------------------------------------------
+
+/** Même règle de validation que la page : outil, version, listes et résumé présents. */
+export function validerRapport(objet) {
+  if (!objet || typeof objet !== 'object' || Array.isArray(objet)) {
+    return { ok: false, erreur: 'le JSON ne décrit pas un objet' };
+  }
+  if (objet.outil !== NOM_OUTIL) {
+    return {
+      ok: false,
+      erreur: 'ce fichier ne vient pas de wcag-contraste (champ « outil » absent ou différent)',
+    };
+  }
+  if (objet.version !== VERSION_RAPPORT) {
+    return {
+      ok: false,
+      erreur: `version de rapport ${objet.version} non prise en charge (attendue : ${VERSION_RAPPORT})`,
+    };
+  }
+  if (!Array.isArray(objet.paires) || !Array.isArray(objet.fondInconnu) || !objet.resume) {
+    return { ok: false, erreur: 'rapport incomplet (paires, fondInconnu ou resume manquant)' };
+  }
+  return { ok: true };
+}
+
+const REGEX_BLOC_INTEGRE = /(<script\b[^>]*\bid="rapports-integres"[^>]*>)[\s\S]*?(<\/script>)/;
+
+/** JSON sûr dans un <script> : « < », U+2028 et U+2029 échappés, JSON.parse les restitue. */
+export function serialiserPourScript(donnees) {
+  return JSON.stringify(donnees)
+    .replace(/</g, '\\u003c')
+    .replace(new RegExp(String.fromCharCode(0x2028), 'g'), '\\u2028')
+    .replace(new RegExp(String.fromCharCode(0x2029), 'g'), '\\u2029');
+}
+
+/** Remplit le bloc de données intégrées du modèle ; null si le bloc est absent. */
+export function injecterRapports(modele, rapports) {
+  if (!REGEX_BLOC_INTEGRE.test(modele)) return null;
+  return modele.replace(
+    REGEX_BLOC_INTEGRE,
+    (_, ouverture, fermeture) => `${ouverture}${serialiserPourScript(rapports)}${fermeture}`,
+  );
+}
+
+const DOSSIER_SCRIPT = dirname(fileURLToPath(import.meta.url));
+
+/** Modèle explicite, sinon rapport.html à côté du script, puis ../assets/rapport.html (skill). */
+export function chercherModele(modele) {
+  const candidats = modele
+    ? [resoudreChemin(modele)]
+    : [join(DOSSIER_SCRIPT, 'rapport.html'), join(DOSSIER_SCRIPT, '..', 'assets', 'rapport.html')];
+  const chemin = candidats.find((c) => existsSync(c)) || null;
+  return { chemin, candidats };
+}
+
+/** Commande d'ouverture d'un fichier dans le navigateur par défaut, selon la plateforme. */
+export function commandeOuverture(chemin, plateforme = process.platform) {
+  if (plateforme === 'win32') {
+    // « start » prend le premier argument entre guillemets pour un titre : d'où le "" vide.
+    return {
+      commande: 'cmd.exe',
+      args: ['/c', 'start', '""', `"${chemin}"`],
+      verbatim: true,
+      affichage: `cmd /c start "" "${chemin}"`,
+    };
+  }
+  const commande = plateforme === 'darwin' ? 'open' : 'xdg-open';
+  return { commande, args: [chemin], verbatim: false, affichage: `${commande} "${chemin}"` };
+}
+
+function ouvrirDansNavigateur(chemin, sortie) {
+  const { commande, args, verbatim, affichage } = commandeOuverture(chemin);
+  if (process.env.CONTRASTE_SANS_OUVRIR === '1') {
+    sortie.info(`Commande d'ouverture (non exécutée, CONTRASTE_SANS_OUVRIR=1) : ${affichage}`);
+    return;
+  }
+  const aLaMain = () =>
+    sortie.erreur(
+      `Impossible d'ouvrir le navigateur automatiquement : ouvrez ${chemin} à la main.`,
+    );
+  try {
+    const enfant = spawn(commande, args, {
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: true,
+      windowsVerbatimArguments: verbatim,
+    });
+    enfant.on('error', aLaMain);
+    enfant.unref();
+    sortie.info(`Ouverture dans le navigateur : ${affichage}`);
+  } catch {
+    aLaMain();
+  }
+}
+
+function commandePage(args, sortie) {
+  let options;
+  try {
+    options = analyserArgumentsCli(args);
+  } catch (erreur) {
+    sortie.erreur(`Erreur : ${erreur.message}`);
+    return 2;
+  }
+  if (options.aide) {
+    sortie.info(AIDE);
+    return 0;
+  }
+  if (!options.fichiers.length) {
+    sortie.erreur(
+      'Usage : node contraste.mjs page <rapport.json>... [--sortie page.html] [--modele rapport.html] [--ouvrir]',
+    );
+    return 2;
+  }
+  const rapports = [];
+  for (const chemin of options.fichiers) {
+    let objet;
+    try {
+      objet = JSON.parse(readFileSync(chemin, 'utf8'));
+    } catch (erreur) {
+      sortie.erreur(`Erreur : rapport « ${chemin} » illisible (${erreur.message})`);
+      return 2;
+    }
+    const validation = validerRapport(objet);
+    if (!validation.ok) {
+      sortie.erreur(`Erreur : rapport « ${chemin} » invalide : ${validation.erreur}`);
+      return 2;
+    }
+    rapports.push({ nom: basename(chemin), rapport: objet });
+  }
+  const modele = chercherModele(options.modele);
+  if (!modele.chemin) {
+    sortie.erreur(
+      `Erreur : modèle de page introuvable. Chemins essayés :\n${modele.candidats.map((c) => `  - ${c}`).join('\n')}`,
+    );
+    return 2;
+  }
+  let page;
+  try {
+    page = injecterRapports(readFileSync(modele.chemin, 'utf8'), rapports);
+  } catch (erreur) {
+    sortie.erreur(`Erreur : modèle « ${modele.chemin} » illisible (${erreur.message})`);
+    return 2;
+  }
+  if (page === null) {
+    sortie.erreur(
+      `Erreur : le modèle « ${modele.chemin} » ne contient pas le bloc <script type="application/json" id="rapports-integres">.`,
+    );
+    return 2;
+  }
+  const cible = resoudreChemin(
+    options.sortie || join(dirname(resoudreChemin(options.fichiers[0])), 'rapport-contraste.html'),
+  );
+  try {
+    mkdirSync(dirname(cible), { recursive: true });
+    writeFileSync(cible, page, 'utf8');
+  } catch (erreur) {
+    sortie.erreur(`Erreur d'écriture : ${erreur.message}`);
+    return 2;
+  }
+  sortie.info(`Page écrite : ${cible}`);
+  if (options.ouvrir) ouvrirDansNavigateur(cible, sortie);
+  return 0;
+}
+
 export function executerCli(argv) {
   const sortie = {
     couleurs: couleursTerminal(),
@@ -1926,6 +2109,7 @@ export function executerCli(argv) {
   }
   if (commande === 'ratio') return commandeRatio(reste, sortie);
   if (commande === 'scan') return commandeScan(reste, sortie);
+  if (commande === 'page') return commandePage(reste, sortie);
   sortie.erreur(`Commande inconnue : ${commande}\n`);
   sortie.erreur(AIDE);
   return 2;
