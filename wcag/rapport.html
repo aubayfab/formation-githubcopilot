@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rapport de contraste WCAG</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fond: #ffffff;
+        --surface: #f4f5f7;
+        --bord: #cfd4db;
+        --texte: #1f2328;
+        --texte-doux: #57606a;
+        --accent: #1f5fa8;
+        --rouge: #b42318;
+        --vert: #067647;
+        --alerte-fond: #fff4d6;
+        --alerte-texte: #6b4a00;
+        --erreur-fond: #fde8e6;
+        --erreur-texte: #8a1c12;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fond: #0f1115;
+          --surface: #1a1d23;
+          --bord: #343941;
+          --texte: #e6e8eb;
+          --texte-doux: #a3abb5;
+          --accent: #7fb0ea;
+          --rouge: #b42318;
+          --vert: #067647;
+          --alerte-fond: #3a2e00;
+          --alerte-texte: #ffd77a;
+          --erreur-fond: #4a1410;
+          --erreur-texte: #ffb3ab;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--fond);
+        color: var(--texte);
+        font:
+          16px/1.45 system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 32px 0 12px;
+      }
+      p {
+        margin: 0 0 12px;
+      }
+      code {
+        font-family: ui-monospace, Consolas, 'Cascadia Mono', monospace;
+        font-size: 0.92em;
+      }
+      button {
+        font: inherit;
+        padding: 6px 12px;
+        border: 1px solid var(--bord);
+        border-radius: 6px;
+        background: var(--surface);
+        color: var(--texte);
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: var(--accent);
+      }
+      button:focus-visible,
+      .depot:focus-within {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .intro {
+        color: var(--texte-doux);
+      }
+      .depot {
+        display: block;
+        margin: 16px 0;
+        padding: 24px 16px;
+        border: 2px dashed var(--bord);
+        border-radius: 10px;
+        text-align: center;
+        background: var(--surface);
+        cursor: pointer;
+      }
+      .depot.est-survolee {
+        border-color: var(--accent);
+      }
+      .depot input {
+        display: block;
+        margin: 10px auto 0;
+      }
+      .charges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .charges .puce {
+        padding: 2px 10px;
+        border: 1px solid var(--bord);
+        border-radius: 999px;
+        background: var(--surface);
+        font-size: 0.9rem;
+      }
+      .erreur,
+      .alerte {
+        margin: 8px 0;
+        padding: 10px 12px;
+        border-radius: 8px;
+      }
+      .erreur {
+        background: var(--erreur-fond);
+        color: var(--erreur-texte);
+      }
+      .alerte {
+        background: var(--alerte-fond);
+        color: var(--alerte-texte);
+      }
+      .cartes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+      }
+      .carte {
+        padding: 14px 16px;
+        border: 1px solid var(--bord);
+        border-radius: 10px;
+        background: var(--surface);
+      }
+      .carte h3 {
+        margin: 0 0 6px;
+        font-size: 1.05rem;
+      }
+      .carte .sous-titre {
+        color: var(--texte-doux);
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        overflow-wrap: anywhere;
+      }
+      .carte dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 2px 12px;
+        margin: 0;
+      }
+      .carte dt {
+        color: var(--texte-doux);
+      }
+      .carte dd {
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+      }
+      .legende {
+        color: var(--texte-doux);
+        font-size: 0.85rem;
+        margin-top: 8px;
+      }
+      .barre {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        align-items: center;
+        justify-content: space-between;
+        margin: 24px 0 12px;
+      }
+      .barre h2 {
+        margin: 0;
+      }
+      .paire {
+        margin: 0 0 18px;
+        padding: 12px 14px 14px;
+        border: 1px solid var(--bord);
+        border-radius: 10px;
+      }
+      .paire header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+        align-items: baseline;
+        margin-bottom: 10px;
+      }
+      .paire header .selecteur {
+        font-weight: 600;
+        overflow-wrap: anywhere;
+      }
+      .paire header .contexte,
+      .paire header .position {
+        color: var(--texte-doux);
+        font-size: 0.9rem;
+        overflow-wrap: anywhere;
+      }
+      .blocs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      .bloc {
+        border: 1px solid var(--bord);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .bloc .titre {
+        padding: 4px 10px;
+        background: var(--surface);
+        color: var(--texte-doux);
+        font-size: 0.85rem;
+        border-bottom: 1px solid var(--bord);
+      }
+      .bloc .apercu {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 110px;
+        padding: 14px;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+      .bloc .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        align-items: center;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+        border-top: 1px solid var(--bord);
+      }
+      .bloc .meta code {
+        color: var(--texte-doux);
+      }
+      .bloc.non-retrouvee .apercu {
+        color: var(--texte-doux);
+        font-style: italic;
+        background: repeating-linear-gradient(45deg, transparent 0 8px, var(--surface) 8px 16px);
+      }
+      .badge {
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #ffffff;
+        font-variant-numeric: tabular-nums;
+      }
+      .badge.echec {
+        background: var(--rouge);
+      }
+      .badge.ok {
+        background: var(--vert);
+      }
+      .badge.corrige {
+        background: #1f5fa8;
+      }
+      .badge.neutre {
+        background: transparent;
+        color: var(--texte-doux);
+        border: 1px solid var(--bord);
+      }
+      .badge.inversion {
+        background: var(--alerte-fond);
+        color: var(--alerte-texte);
+        border: 1px solid var(--alerte-texte);
+      }
+      .raisons {
+        margin: 6px 0 0;
+        padding-left: 18px;
+        color: var(--texte-doux);
+        font-size: 0.85rem;
+      }
+      details {
+        margin: 16px 0;
+        border: 1px solid var(--bord);
+        border-radius: 10px;
+        padding: 0 14px;
+      }
+      details summary {
+        padding: 10px 0;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      details table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+      }
+      details th,
+      details td {
+        padding: 6px 8px;
+        border-top: 1px solid var(--bord);
+        text-align: left;
+        vertical-align: top;
+        overflow-wrap: anywhere;
+      }
+      details th {
+        color: var(--texte-doux);
+        font-weight: 600;
+      }
+      .pastille {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-right: 6px;
+        border: 1px solid var(--bord);
+        border-radius: 3px;
+        vertical-align: -2px;
+      }
+      .vide {
+        color: var(--texte-doux);
+        font-style: italic;
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 12px 16px;
+        }
+        .blocs {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Rapport de contraste WCAG</h1>
+      <p class="intro">
+        Déposez un ou plusieurs rapports JSON produits par <code>contraste.mjs scan</code> ou
+        <code>corriger.mjs</code>. Le premier déposé sert de référence (en pratique « Avant ») ; les
+        suivants lui sont comparés paire par paire.
+      </p>
+      <label class="depot" id="depot">
+        <span>Glissez-déposez vos rapports ici, ou choisissez des fichiers.</span>
+        <input type="file" id="fichiers" accept=".json,application/json" multiple />
+      </label>
+      <div class="charges" id="charges" hidden></div>
+      <div id="erreurs"></div>
+      <div id="contenu" hidden>
+        <section class="cartes" id="cartes" aria-label="Résumé par rapport"></section>
+        <p class="legende">
+          Écart : ΔE OKLab (×100) entre la couleur de texte du rapport et celle de la référence,
+          calculé sur le même ensemble de paires pour tous les rapports comparés : celles en échec
+          dans la référence, dont le texte a changé et qui sont conformes dans chacun des rapports
+          comparés. ≈ 2 : à peine perceptible ; ≈ 10 : nettement différent ; &gt; 30 : autre
+          couleur.
+        </p>
+        <div class="barre">
+          <h2 id="titre-paires">Paires texte / fond</h2>
+          <button type="button" id="basculer" aria-pressed="false">
+            Afficher toutes les paires
+          </button>
+        </div>
+        <div id="paires"></div>
+        <details id="a-verifier">
+          <summary>À vérifier manuellement</summary>
+          <div id="a-verifier-contenu"></div>
+        </details>
+        <details id="fond-inconnu">
+          <summary>Fond inconnu</summary>
+          <div id="fond-inconnu-contenu"></div>
+        </details>
+      </div>
+    </main>
+    <script>
+      (function () {
+        'use strict';
+
+        // --- Calculs (testables hors navigateur) ------------------------------------------
+
+        function hexVersRgb(hex) {
+          const m = /^#([0-9a-f]{6})$/i.exec(hex || '');
+          if (!m) return null;
+          return {
+            r: parseInt(m[1].slice(0, 2), 16),
+            g: parseInt(m[1].slice(2, 4), 16),
+            b: parseInt(m[1].slice(4, 6), 16),
+          };
+        }
+
+        function lineariser(canal) {
+          const v = canal / 255;
+          return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        }
+
+        function versOklab(hex) {
+          const rgb = hexVersRgb(hex);
+          if (!rgb) return null;
+          const r = lineariser(rgb.r);
+          const g = lineariser(rgb.g);
+          const b = lineariser(rgb.b);
+          const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+          const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+          const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+          return {
+            L: 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+            a: 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+            b: 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+          };
+        }
+
+        // Écart perceptif OKLab ×100 entre deux hex ; null si l'un des deux manque.
+        function deltaE(hex1, hex2) {
+          const a = versOklab(hex1);
+          const b = versOklab(hex2);
+          if (!a || !b) return null;
+          return 100 * Math.sqrt((a.L - b.L) ** 2 + (a.a - b.a) ** 2 + (a.b - b.b) ** 2);
+        }
+
+        function validerRapport(objet) {
+          if (!objet || typeof objet !== 'object' || Array.isArray(objet)) {
+            return { ok: false, erreur: 'le JSON ne décrit pas un objet' };
+          }
+          if (objet.outil !== 'wcag-contraste') {
+            return {
+              ok: false,
+              erreur:
+                'ce fichier ne vient pas de wcag-contraste (champ « outil » absent ou différent)',
+            };
+          }
+          if (objet.version !== 1) {
+            return {
+              ok: false,
+              erreur: 'version de rapport ' + objet.version + ' non prise en charge (attendue : 1)',
+            };
+          }
+          if (!Array.isArray(objet.paires) || !Array.isArray(objet.fondInconnu) || !objet.resume) {
+            return {
+              ok: false,
+              erreur: 'rapport incomplet (paires, fondInconnu ou resume manquant)',
+            };
+          }
+          return { ok: true };
+        }
+
+        // Regroupe les paires de tous les rapports par id : Map id → [paire ou null par rapport].
+        function apparier(rapports, cle) {
+          const groupes = new Map();
+          rapports.forEach((rapport, index) => {
+            for (const paire of rapport[cle] || []) {
+              if (!groupes.has(paire.id))
+                groupes.set(
+                  paire.id,
+                  rapports.map(() => null),
+                );
+              groupes.get(paire.id)[index] = paire;
+            }
+          });
+          return groupes;
+        }
+
+        function texteChange(ref, paire) {
+          if (!ref || !paire || !ref.texte || !paire.texte || !ref.texte.hex || !paire.texte.hex) {
+            return false;
+          }
+          return ref.texte.hex.toLowerCase() !== paire.texte.hex.toLowerCase();
+        }
+
+        // Nombre de paires dont la couleur de texte diffère de la référence.
+        function compterChanges(reference, rapport) {
+          const parId = new Map(reference.paires.map((p) => [p.id, p]));
+          return rapport.paires.filter((paire) => texteChange(parId.get(paire.id), paire)).length;
+        }
+
+        // Ensemble commun de comparaison : paires en échec dans la référence, au texte changé et
+        // conformes dans chacun des rapports comparés. Le même pour toutes les cartes, sinon les
+        // écarts moyens de rapports différents ne seraient pas comparables.
+        function ensembleCommun(reference, compares) {
+          const ids = [];
+          for (const ref of reference.paires) {
+            if (ref.statut !== 'echec' || !ref.texte || !ref.texte.hex) continue;
+            const partout = compares.every((rapport) => {
+              const p = (rapport.paires || []).find((x) => x.id === ref.id);
+              return p && p.statut === 'conforme' && texteChange(ref, p);
+            });
+            if (partout) ids.push(ref.id);
+          }
+          return ids;
+        }
+
+        // Écart moyen et maximal d'un rapport par rapport à la référence, sur l'ensemble commun.
+        function calculerEcarts(reference, rapport, ids) {
+          const parId = new Map(reference.paires.map((p) => [p.id, p]));
+          const ecarts = [];
+          for (const paire of rapport.paires) {
+            if (!ids.includes(paire.id)) continue;
+            const ref = parId.get(paire.id);
+            const e = ref ? deltaE(ref.texte.hex, paire.texte.hex) : null;
+            if (e !== null) ecarts.push(e);
+          }
+          if (!ecarts.length) return { nombre: 0, moyen: null, maximal: null };
+          return {
+            nombre: ecarts.length,
+            moyen: ecarts.reduce((s, e) => s + e, 0) / ecarts.length,
+            maximal: Math.max(...ecarts),
+          };
+        }
+
+        function tronquer(valeur) {
+          return (Math.floor(valeur * 100 + 1e-9) / 100).toFixed(2);
+        }
+
+        function taillePx(taille) {
+          const m = /^(\d+(?:\.\d+)?)px$/.exec((taille || '').trim());
+          if (!m) return 18;
+          return Math.min(44, Math.max(12, parseFloat(m[1])));
+        }
+
+        function modeCorrection(rapport, id) {
+          for (const c of rapport.corrections || []) {
+            if ((c.paires || []).some((p) => p.id === id)) return c;
+          }
+          return null;
+        }
+
+        if (typeof module !== 'undefined' && module.exports) {
+          module.exports = {
+            versOklab,
+            deltaE,
+            validerRapport,
+            apparier,
+            compterChanges,
+            ensembleCommun,
+            calculerEcarts,
+            tronquer,
+            taillePx,
+          };
+        }
+        if (typeof document === 'undefined') return;
+
+        // --- Interface -------------------------------------------------------------------
+
+        const rapports = [];
+        let toutAfficher = false;
+        const $ = (id) => document.getElementById(id);
+
+        function element(balise, attributs, ...enfants) {
+          const el = document.createElement(balise);
+          for (const [nom, valeur] of Object.entries(attributs || {})) {
+            if (nom === 'class') el.className = valeur;
+            else if (nom === 'style') el.style.cssText = valeur;
+            else if (nom === 'text') el.textContent = valeur;
+            else el.setAttribute(nom, valeur);
+          }
+          for (const enfant of enfants) {
+            if (enfant === null || enfant === undefined) continue;
+            el.append(typeof enfant === 'string' ? document.createTextNode(enfant) : enfant);
+          }
+          return el;
+        }
+
+        function signalerErreur(nom, message) {
+          $('erreurs').append(
+            element('div', { class: 'erreur', role: 'alert' }, `${nom} : ${message}.`),
+          );
+        }
+
+        async function chargerFichiers(liste) {
+          $('erreurs').replaceChildren();
+          for (const fichier of Array.from(liste)) {
+            let objet;
+            try {
+              objet = JSON.parse(await fichier.text());
+            } catch (erreur) {
+              signalerErreur(fichier.name, 'JSON invalide (' + erreur.message + ')');
+              continue;
+            }
+            const validation = validerRapport(objet);
+            if (!validation.ok) {
+              signalerErreur(fichier.name, validation.erreur);
+              continue;
+            }
+            rapports.push({ nom: fichier.name, rapport: objet });
+          }
+          rendre();
+        }
+
+        function rendreCharges() {
+          const zone = $('charges');
+          zone.replaceChildren();
+          zone.hidden = rapports.length === 0;
+          rapports.forEach(({ nom, rapport }, index) => {
+            const libelle = `${index === 0 ? 'Référence : ' : ''}${rapport.etiquette || 'Sans étiquette'} (${nom})`;
+            zone.append(element('span', { class: 'puce', text: libelle }));
+          });
+          if (rapports.length) {
+            const vider = element('button', { type: 'button', text: 'Tout retirer' });
+            vider.addEventListener('click', () => {
+              rapports.length = 0;
+              $('fichiers').value = '';
+              rendre();
+            });
+            zone.append(vider);
+          }
+        }
+
+        function rendreCartes() {
+          const zone = $('cartes');
+          zone.replaceChildren();
+          const reference = rapports[0].rapport;
+          const compares = rapports.slice(1).map((r) => r.rapport);
+          const communs = ensembleCommun(reference, compares);
+          const pluriel = communs.length > 1 ? 's' : '';
+          const libelleEnsemble =
+            `${communs.length} paire${pluriel} corrigée${pluriel}` +
+            (compares.length > 1 ? ' partout' : '');
+          rapports.forEach(({ rapport }, index) => {
+            const r = rapport.resume;
+            const dl = element('dl');
+            const ligne = (terme, valeur) =>
+              dl.append(element('dt', { text: terme }), element('dd', { text: valeur }));
+            ligne('Textes sous le seuil', String(r.echecs));
+            ligne('Conformes', String(r.conformes));
+            ligne('À vérifier', String(r.aVerifier));
+            ligne('Fond inconnu', String(r.fondInconnu));
+            let explication = null;
+            if (index > 0) {
+              const ecarts = calculerEcarts(reference, rapport, communs);
+              ligne('Textes changés', String(compterChanges(reference, rapport)));
+              ligne(
+                `Écart moyen (${libelleEnsemble})`,
+                ecarts.moyen === null ? '—' : ecarts.moyen.toFixed(1),
+              );
+              ligne('Écart maximal', ecarts.maximal === null ? '—' : ecarts.maximal.toFixed(1));
+              if (!communs.length) {
+                explication = element('div', {
+                  class: 'legende',
+                  text:
+                    compares.length > 1
+                      ? 'Aucune paire en échec dans la référence n’est corrigée dans tous les rapports comparés : écarts non comparables.'
+                      : 'Aucune paire en échec dans la référence n’est corrigée dans ce rapport.',
+                });
+              }
+            }
+            const date = rapport.date ? new Date(rapport.date) : null;
+            const sousTitre =
+              `Niveau ${rapport.niveau || '?'} · ${(rapport.fichiers || []).join(', ')}` +
+              (date && !isNaN(date) ? ` · ${date.toLocaleString('fr-FR')}` : '');
+            zone.append(
+              element(
+                'article',
+                { class: 'carte' },
+                element('h3', {
+                  text:
+                    (rapport.etiquette || 'Sans étiquette') + (index === 0 ? ' (référence)' : ''),
+                }),
+                element('div', { class: 'sous-titre', text: sousTitre }),
+                dl,
+                explication,
+              ),
+            );
+          });
+        }
+
+        function badgeRatio(paire) {
+          if (paire.ratio === null || paire.ratio === undefined) {
+            return element('span', { class: 'badge neutre', text: 'ratio inconnu' });
+          }
+          const passe = paire.ratio >= paire.seuil;
+          return element('span', {
+            class: 'badge ' + (passe ? 'ok' : 'echec'),
+            text: `${tronquer(paire.ratio)} / ${paire.seuil}`,
+            title: passe ? 'Au-dessus du seuil' : 'Sous le seuil',
+          });
+        }
+
+        function blocPaire(paire, reference, rapport, etiquette) {
+          if (!paire) {
+            return element(
+              'div',
+              { class: 'bloc non-retrouvee' },
+              element('div', { class: 'titre', text: etiquette }),
+              element('div', { class: 'apercu', text: 'Paire non retrouvée dans ce rapport' }),
+            );
+          }
+          const fond = paire.fond && paire.fond.hex ? paire.fond.hex : null;
+          const texte = paire.texte && paire.texte.hex ? paire.texte.hex : null;
+          const apercu = element(
+            'div',
+            {
+              class: 'apercu',
+              style: `background:${fond || 'transparent'};color:${texte || 'inherit'};font-size:${taillePx(paire.taille)}px;${paire.grandTexte ? 'font-weight:700;' : ''}`,
+            },
+            element('span', {
+              text: texte ? 'Texte d’exemple — Aa 0123' : 'couleur de texte inconnue',
+            }),
+          );
+          const meta = element('div', { class: 'meta' }, badgeRatio(paire));
+          meta.append(element('code', { text: `${texte || '?'} sur ${fond || '?'}` }));
+          if (reference && reference !== paire && reference.texte && paire.texte) {
+            const change = (reference.texte.hex || '') !== (paire.texte.hex || '');
+            if (change) {
+              const e = deltaE(reference.texte.hex, paire.texte.hex);
+              if (paire.ratio !== null && paire.ratio >= paire.seuil) {
+                meta.append(element('span', { class: 'badge corrige', text: 'corrigé' }));
+              }
+              if (e !== null) meta.append(element('span', { text: `ΔE ${e.toFixed(1)}` }));
+            }
+          }
+          const correction = modeCorrection(rapport, paire.id);
+          if (correction && correction.mode && correction.mode !== 'impossible') {
+            const libelles = {
+              litteral: 'littéral',
+              variable: 'variable',
+              'variable-dediee': 'variable dédiée',
+            };
+            meta.append(
+              element('span', {
+                class: 'badge neutre',
+                text:
+                  (libelles[correction.mode] || correction.mode) +
+                  (correction.variableDediee ? ' ' + correction.variableDediee : ''),
+              }),
+            );
+            if (correction.inversion) {
+              meta.append(
+                element('span', {
+                  class: 'badge inversion',
+                  text: 'inversion clair/sombre',
+                  title:
+                    'Le texte est passé de l’autre côté de la luminance du fond : à valider visuellement',
+                }),
+              );
+            }
+          } else if (correction && correction.mode === 'impossible') {
+            meta.append(
+              element('span', { class: 'badge neutre', text: 'impossible par le texte seul' }),
+            );
+          }
+          const bloc = element(
+            'div',
+            { class: 'bloc' },
+            element('div', { class: 'titre', text: etiquette }),
+            apercu,
+            meta,
+          );
+          if (paire.raisons && paire.raisons.length && paire.statut === 'a-verifier') {
+            const ul = element('ul', { class: 'raisons' });
+            for (const raison of paire.raisons) ul.append(element('li', { text: raison }));
+            bloc.append(ul);
+          }
+          return bloc;
+        }
+
+        function rendrePaires() {
+          const zone = $('paires');
+          zone.replaceChildren();
+          const liste = rapports.map((r) => r.rapport);
+          const groupes = apparier(liste, 'paires');
+          let affichees = 0;
+          for (const [id, paires] of groupes) {
+            const enEchec = paires.some((p) => p && p.statut === 'echec');
+            if (!toutAfficher && !enEchec) continue;
+            affichees++;
+            const modele = paires.find((p) => p);
+            const blocs = element('div', { class: 'blocs' });
+            paires.forEach((paire, index) => {
+              blocs.append(
+                blocPaire(
+                  paire,
+                  paires[0],
+                  liste[index],
+                  liste[index].etiquette || `Rapport ${index + 1}`,
+                ),
+              );
+            });
+            const position = modele ? `${modele.fichier}:${modele.ligne}` : '';
+            zone.append(
+              element(
+                'article',
+                { class: 'paire', 'data-id': id },
+                element(
+                  'header',
+                  null,
+                  element('span', { class: 'selecteur', text: modele.selecteur }),
+                  element('span', { class: 'contexte', text: modele.contexte }),
+                  element('span', { class: 'position', text: position }),
+                ),
+                blocs,
+              ),
+            );
+          }
+          $('titre-paires').textContent = toutAfficher
+            ? `Toutes les paires (${affichees})`
+            : `Paires sous le seuil dans au moins un rapport (${affichees} sur ${groupes.size})`;
+          if (!affichees)
+            zone.append(element('p', { class: 'vide', text: 'Aucune paire à afficher.' }));
+        }
+
+        function rendreAVerifier() {
+          const zone = $('a-verifier-contenu');
+          zone.replaceChildren();
+          const liste = rapports.map((r) => r.rapport);
+          const groupes = apparier(liste, 'paires');
+          const lignes = [];
+          for (const [, paires] of groupes) {
+            if (!paires.some((p) => p && p.statut === 'a-verifier')) continue;
+            const modele = paires.find((p) => p);
+            const tr = element(
+              'tr',
+              null,
+              element('td', { text: modele.selecteur }),
+              element('td', { text: modele.contexte }),
+            );
+            paires.forEach((paire) => {
+              const td = element('td');
+              if (!paire) td.append(element('span', { class: 'vide', text: 'non retrouvée' }));
+              else {
+                td.append(badgeRatio(paire));
+                const ul = element('ul', { class: 'raisons' });
+                for (const raison of paire.raisons || [])
+                  ul.append(element('li', { text: raison }));
+                td.append(ul);
+              }
+              tr.append(td);
+            });
+            lignes.push(tr);
+          }
+          $('a-verifier').querySelector('summary').textContent =
+            `À vérifier manuellement (${lignes.length})`;
+          if (!lignes.length) {
+            zone.append(element('p', { class: 'vide', text: 'Rien à vérifier.' }));
+            return;
+          }
+          const entete = element(
+            'tr',
+            null,
+            element('th', { text: 'Sélecteur' }),
+            element('th', { text: 'Contexte' }),
+          );
+          for (const r of liste) entete.append(element('th', { text: r.etiquette || 'Rapport' }));
+          zone.append(
+            element(
+              'table',
+              null,
+              element('thead', null, entete),
+              element('tbody', null, ...lignes),
+            ),
+          );
+        }
+
+        function rendreFondInconnu() {
+          const zone = $('fond-inconnu-contenu');
+          zone.replaceChildren();
+          const liste = rapports.map((r) => r.rapport);
+          const groupes = apparier(liste, 'fondInconnu');
+          const lignes = [];
+          for (const [, entrees] of groupes) {
+            const modele = entrees.find((e) => e);
+            const tr = element(
+              'tr',
+              null,
+              element('td', { text: modele.selecteur }),
+              element('td', { text: modele.contexte }),
+              element('td', { text: `${modele.fichier}:${modele.ligne}` }),
+            );
+            entrees.forEach((entree) => {
+              const td = element('td');
+              if (!entree) td.append(element('span', { class: 'vide', text: 'non retrouvée' }));
+              else {
+                const hex = entree.texte && entree.texte.hex;
+                if (hex)
+                  td.append(element('span', { class: 'pastille', style: `background:${hex}` }));
+                td.append(
+                  element('code', { text: hex || (entree.texte && entree.texte.declaree) || '?' }),
+                );
+                if (entree.raison)
+                  td.append(element('div', { class: 'raisons', text: entree.raison }));
+              }
+              tr.append(td);
+            });
+            lignes.push(tr);
+          }
+          $('fond-inconnu').querySelector('summary').textContent =
+            `Fond inconnu (${lignes.length})`;
+          if (!lignes.length) {
+            zone.append(element('p', { class: 'vide', text: 'Aucune règle au fond inconnu.' }));
+            return;
+          }
+          const entete = element(
+            'tr',
+            null,
+            element('th', { text: 'Sélecteur' }),
+            element('th', { text: 'Contexte' }),
+            element('th', { text: 'Position' }),
+          );
+          for (const r of liste) entete.append(element('th', { text: r.etiquette || 'Rapport' }));
+          zone.append(
+            element(
+              'table',
+              null,
+              element('thead', null, entete),
+              element('tbody', null, ...lignes),
+            ),
+          );
+        }
+
+        function rendre() {
+          rendreCharges();
+          $('contenu').hidden = rapports.length === 0;
+          if (!rapports.length) return;
+          rendreCartes();
+          rendrePaires();
+          rendreAVerifier();
+          rendreFondInconnu();
+        }
+
+        function demarrer() {
+          const depot = $('depot');
+          $('fichiers').addEventListener('change', (e) => chargerFichiers(e.target.files));
+          depot.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            depot.classList.add('est-survolee');
+          });
+          depot.addEventListener('dragleave', () => depot.classList.remove('est-survolee'));
+          depot.addEventListener('drop', (e) => {
+            e.preventDefault();
+            depot.classList.remove('est-survolee');
+            chargerFichiers(e.dataTransfer.files);
+          });
+          $('basculer').addEventListener('click', () => {
+            toutAfficher = !toutAfficher;
+            $('basculer').setAttribute('aria-pressed', String(toutAfficher));
+            $('basculer').textContent = toutAfficher
+              ? 'N’afficher que les échecs'
+              : 'Afficher toutes les paires';
+            rendrePaires();
+          });
+        }
+
+        demarrer();
+      })();
+    </script>
+  </body>
+</html>
