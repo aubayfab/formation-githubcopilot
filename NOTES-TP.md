@@ -131,3 +131,14 @@ Problèmes rencontrés :
 > Combien de crédits IA par rapport au TP précédent ?
 
 Problèmes rencontrés :
+
+# TP N°11 – Des scripts sur évènements
+> Quels sont les types de hooks utilisés ?
+
+> Comment est architecturé le hook ?
+
+> Quel est le comportement de l’agent quand on lui demande de lire le fichier ?
+
+> Quel est le comportement de l’agent avec la commande Get-Content ?
+
+> Quelles sont les pistes de résolution ?

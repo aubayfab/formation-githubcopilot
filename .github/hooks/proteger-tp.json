@@ -3,13 +3,13 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "node .github/hooks/proteger-notes.cjs"
+        "command": "node .github/hooks/proteger-tp.cjs"
       }
     ],
     "PreToolUse": [
       {
         "type": "command",
-        "command": "node .github/hooks/proteger-notes.cjs"
+        "command": "node .github/hooks/proteger-tp.cjs"
       }
     ]
   }

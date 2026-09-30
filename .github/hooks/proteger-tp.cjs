@@ -13,7 +13,7 @@ const path = require('node:path');
 const SESSIONS_CHECK_REPORT = path.join(os.tmpdir(), 'formation-copilot-check-report');
 const RESERVE_STAGIAIRE = /notes[-_ ]?tp/;
 const RESERVE_CHECK_REPORT = /referentiel-regles|regles-metier/;
-const LANCEMENT_CHECK_REPORT = /\/check-report|tu es correcteur\. tu compares un livrable/;
+const LANCEMENT_CHECK_REPORT = /\/check-report/;
 const OUTIL_ECRITURE = /create|replace|insert|edit|patch|write/i;
 
 // Chemins encodés en URI, accents : « r%C3%A8gles-m%C3%A9tier » devient « regles-metier ».
