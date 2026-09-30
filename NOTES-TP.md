@@ -120,15 +120,15 @@ Problèmes rencontrés :
 | Anomalies signalées, sur 4                    |        |
 | Crédits IA consommés                          |        |
 
-> Quelle est la suite d'appels de sous-agents visible dans le chat ? Le journal d'orchestration y correspond-il ?
+> Copiez ici votre orchestrateur :
 
-> Avec le même modèle pour lire le code, qu'est-ce qui a changé dans la grille par rapport à l'agent seul ? D'où vient chaque gain ?
+> Copiez ici votre explorateur :
 
-> Qu'ont trouvé le scanner et l'analyste que l'agent seul n'avait pas ? Ont-ils introduit des règles fausses ?
+> Copiez ici votre scanner de cas limites :
 
-> Dans le livrable, quelles phrases ont été écrites par l'orchestrateur ? Pourquoi est-ce important ?
+> Copiez ici votre vérificateur :
 
-> Combien de crédits IA par rapport au TP précédent ?
+> Copiez ici votre analyste :
 
 Problèmes rencontrés :
 
@@ -143,3 +143,15 @@ Problèmes rencontrés :
 > Quel est le comportement de l’agent avec la commande Get-Content ?
 
 > Quelles sont les pistes de résolution ?
+
+Problèmes rencontrés :
+
+# TP N°12 – Des compétences spécifiques
+
+> Comment s’est comporté le modèle dans ses estimations ? Les couleurs ont-elles été respectées ou dénaturées ?
+
+> Comment s'est comporté l'agent avec sa skill ?
+
+> Copiez ici votre SKILL.md:
+
+Problèmes rencontrés :
