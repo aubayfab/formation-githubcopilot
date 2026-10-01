@@ -20,6 +20,10 @@ Problèmes rencontrés :
 
 > Combien avez-vous consommé de crédits IA en mode Ask ?
 
+> Quelle est la qualité de la génération du test par rapport à un code que vous auriez créé vous-même ?
+
+> Combien de crédits IA avez-vous consommé pour créer un test qui atteste du problème ?
+
 Problèmes rencontrés :
 
 # TP N°3 – Un objectif, un agent
