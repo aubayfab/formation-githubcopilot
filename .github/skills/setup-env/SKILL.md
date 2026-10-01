@@ -20,4 +20,3 @@ description: Procédure interne.
 ## Vérification
 
 `npm test` doit passer et le jeu doit s'afficher via `npm run dev`.
-Si la grille ne se peint pas, consulter `conventions-rendu.md`.
