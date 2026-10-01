@@ -24,6 +24,8 @@ Problèmes rencontrés :
 
 > Combien de crédits IA avez-vous consommé pour créer un test qui atteste du problème ?
 
+> Copiez ici votre fichier de test qui met en évidence le problème :
+
 Problèmes rencontrés :
 
 # TP N°3 – Un objectif, un agent
