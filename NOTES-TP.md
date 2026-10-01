@@ -16,7 +16,7 @@ Problèmes rencontrés :
 
 > Quel est le fichier fautif ?
 
-> Le diagnostique a-t-il été plus rapide que si vous l’aviez fait à la main ?
+> Le diagnostic a-t-il été plus rapide que si vous l’aviez fait à la main ?
 
 > Combien avez-vous consommé de crédits IA en mode Ask ?
 
