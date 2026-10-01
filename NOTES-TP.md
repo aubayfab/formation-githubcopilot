@@ -8,7 +8,7 @@
 
 > Comment aurait-on pu éviter cette erreur ?
 
-> La complétion et les suggestions ont-ils couverts l’ensemble des modifications à réaliser ?
+> La complétion et les suggestions ont-elles couverts l’ensemble des modifications à réaliser ?
 
 Problèmes rencontrés :
 
