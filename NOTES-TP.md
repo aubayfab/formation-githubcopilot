@@ -104,7 +104,6 @@ Problèmes rencontrés :
 | Règles importantes retrouvées, sur 31         |               |            |
 | Règles partielles (non comptées)              |               |            |
 | Sources exactes, sur 31                       |               |            |
-| Énoncés avec un nom de code                   |               |            |
 | Règles fausses (contredisent le référentiel)  |               |            |
 | Anomalies signalées, sur 4                    |               |            |
 | Crédits IA consommés                          |               |            |
@@ -121,7 +120,6 @@ Problèmes rencontrés :
 | Règles importantes retrouvées, sur 31         |        |
 | Règles partielles (non comptées)              |        |
 | Sources exactes, sur 31                       |        |
-| Énoncés avec un nom de code                   |        |
 | Règles fausses (contredisent le référentiel)  |        |
 | Anomalies signalées, sur 4                    |        |
 | Crédits IA consommés                          |        |
