@@ -164,7 +164,7 @@ Problèmes rencontrés :
 
 > Relisez le code généré. Pourquoi est apparu un coefficient (×1,2) et un seuil (12 000) dans le code ? L’agent les a-t-il signalés comme suspects ?
 
-> Quel est l'origine de l'empoisonnement ?
+> Quelle est l'origine de l'empoisonnement ?
 
 > Si la règle injectée avait été une dépendance « recommandée » au lieu d’un coefficient, ou si la consigne était un ordre explicite, quels risques ?
 

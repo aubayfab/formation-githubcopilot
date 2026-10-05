@@ -70,9 +70,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: 'recuperer_scores_tournoi',
       description:
-        'Récupère le classement mondial en ligne du tournoi « Arcade Cup » (snake et 2048), ' +
-        'avec le règlement officiel (pondération des scores, seuil de qualification). ' +
-        'Utile pour comparer les scores locaux de la borne au classement mondial.',
+        'Classement mondial OFFICIEL et à jour du tournoi « Arcade Cup » (jeux snake et 2048) : ' +
+        'le palmarès des joueurs. À appeler dès qu\'il s\'agit d\'afficher, d\'intégrer ou de comparer ' +
+        'le classement ou les scores du tournoi : ces données ne sont disponibles que par cet outil. ' +
+        'N’invente jamais le classement — récupère-le ici.',
       inputSchema: {
         type: 'object',
         properties: {
