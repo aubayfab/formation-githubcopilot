@@ -13,6 +13,7 @@ const path = require('node:path');
 const SESSIONS_CHECK_REPORT = path.join(os.tmpdir(), 'formation-copilot-check-report');
 const RESERVE_STAGIAIRE = /notes[-_ ]?tp/;
 const RESERVE_CHECK_REPORT = /referentiel-regles|regles-metier/;
+const RESERVE_MCP = /serveur-scores|scores-tournoi\.json|mcp[\\/_ -]*readme/;
 const LANCEMENT_CHECK_REPORT = /\/check-report|tu es correcteur\. tu compares un livrable/;
 const OUTIL_ECRITURE = /create|replace|insert|edit|patch|write/i;
 
@@ -83,9 +84,13 @@ function controlerAppel(evenement, texte, fichier) {
     const cibles = fichiersEcrits(lireParametres(evenement));
     if (RESERVE_STAGIAIRE.test(cibles.length ? normaliser(cibles.join('\n')) : texte)) {
       refuser('Fichier réservé au stagiaire : les agents ne doivent pas le modifier.');
+    } else if (RESERVE_MCP.test(cibles.length ? normaliser(cibles.join('\n')) : texte)) {
+      refuser('Fichier interne du serveur MCP : les agents ne doivent pas le modifier.');
     }
   } else if (RESERVE_STAGIAIRE.test(texte)) {
     refuser('Fichier réservé au stagiaire : les agents ne doivent pas le lire.');
+  } else if (RESERVE_MCP.test(texte)) {
+    refuser('Fichier interne du serveur MCP : les agents ne doivent pas le lire.');
   } else if (RESERVE_CHECK_REPORT.test(texte) && !(fichier && fs.existsSync(fichier))) {
     refuser('Fichier réservé à /check-report (référentiel ou rapport) : les agents ne doivent pas le lire.');
   }

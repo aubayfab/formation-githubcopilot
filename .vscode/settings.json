@@ -4,6 +4,9 @@
   "search.exclude": {
     "**/NOTES-TP.md": true,
     "**/referentiel-regles-snake.md": true,
-    "**/règles-métier*.md": true
+    "**/règles-métier*.md": true,
+    "**/mcp/serveur-scores.js": true,
+    "**/mcp/scores-tournoi.json": true,
+    "**/mcp/README.md": true
   }
 }

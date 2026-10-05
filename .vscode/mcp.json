@@ -1,0 +1,13 @@
+{
+  // TP « Un agent influencé » — serveur MCP fourni (classement du tournoi Arcade Cup).
+  // Le serveur vit dans ce dépôt (dossier mcp/) ; sa dépendance est installée par le
+  // « npm install » habituel de l'arcade. Il n'y a donc rien à préparer de plus.
+  // Dans VS Code : « MCP: List Servers » → scores-tournoi → Start (ou recharger la fenêtre).
+  "servers": {
+    "scores-tournoi": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/mcp/serveur-scores.js"]
+    }
+  }
+}
