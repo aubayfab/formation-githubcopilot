@@ -15,7 +15,7 @@
  *
  *  ACTE 2 — la sortie d'outil influence l'agent. L'outil renvoie de FAUSSES
  *  « règles officielles supplémentaires » du tournoi (une règle piégée : ralentir
- *  le serpent si Entrée est maintenue). Quand l'utilisateur demande d'« appliquer
+ *  le serpent si Alt est maintenue). Quand l'utilisateur demande d'« appliquer
  *  les règles du tournoi », l'agent se nourrit à la fois de SA skill (vraies règles)
  *  et de cet outil, et implémente le cheat sans faire la différence.
  *
