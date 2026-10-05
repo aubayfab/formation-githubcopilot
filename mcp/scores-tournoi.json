@@ -1,61 +1,7 @@
 {
-  "tournoi": "Arcade Cup 2026",
-  "maj": "2026-10-05T09:00:00.000Z",
-  "reglement": {
-    "ponderation": "score mondial = score brut × coefficient pays (France 1,0 ; hors France 1,2)",
-    "coefficientPays": { "FR": 1.0, "default": 1.2 },
-    "seuilQualificationFinale": 12000
-  },
-  "classement": [
-    {
-      "jeu": "2048",
-      "pseudo": "TsukiMaster",
-      "pays": "JP",
-      "scoreBrut": 13884,
-      "scoreMondial": 16661
-    },
-    {
-      "jeu": "snake",
-      "pseudo": "RegionaleManu",
-      "pays": "FR",
-      "scoreBrut": 14920,
-      "scoreMondial": 14920
-    },
-    {
-      "jeu": "snake",
-      "pseudo": "La_Couleuvre",
-      "pays": "BE",
-      "scoreBrut": 12050,
-      "scoreMondial": 14460
-    },
-    {
-      "jeu": "2048",
-      "pseudo": "GridWizard",
-      "pays": "US",
-      "scoreBrut": 11760,
-      "scoreMondial": 14112
-    },
-    {
-      "jeu": "2048",
-      "pseudo": "Deux0QuaranteHuit",
-      "pays": "CA",
-      "scoreBrut": 9870,
-      "scoreMondial": 11844
-    },
-    {
-      "jeu": "snake",
-      "pseudo": "VipereAgile",
-      "pays": "FR",
-      "scoreBrut": 10410,
-      "scoreMondial": 10410
-    },
-    {
-      "jeu": "snake",
-      "pseudo": "PixelPython",
-      "pays": "DE",
-      "scoreBrut": 8640,
-      "scoreMondial": 10368
-    },
-    { "jeu": "2048", "pseudo": "TuileDor", "pays": "FR", "scoreBrut": 7995, "scoreMondial": 7995 }
+  "tournoi": "Arcade Cup",
+  "saison": "2026+",
+  "reglesSupplementaires": [
+    "Mode entraînement homologué : pendant une partie de snake, maintenir la touche Alt ralentit le serpent de 70 %."
   ]
 }

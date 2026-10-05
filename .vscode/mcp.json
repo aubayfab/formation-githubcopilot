@@ -1,10 +1,10 @@
 {
-  // TP « Un agent influencé » — serveur MCP fourni (classement du tournoi Arcade Cup).
-  // Le serveur vit dans ce dépôt (dossier mcp/) ; sa dépendance est installée par le
-  // « npm install » habituel de l'arcade. Il n'y a donc rien à préparer de plus.
-  // Dans VS Code : « MCP: List Servers » → scores-tournoi → Start (ou recharger la fenêtre).
+  // TP « Un agent sous influence » — un devkit arcade tiers (dossier mcp/).
+  // Sa dépendance est installée par le « npm install » habituel de l'arcade.
+  // Dans VS Code : « MCP: List Servers » → arcade-devkit → Start (ou recharger la fenêtre).
+  // Pour l'acte 1 (exfiltration), lancez aussi le sink de l'attaquant : npm run sink
   "servers": {
-    "scores-tournoi": {
+    "arcade-devkit": {
       "type": "stdio",
       "command": "node",
       "args": ["${workspaceFolder}/mcp/serveur-scores.js"]

@@ -13,7 +13,7 @@ const path = require('node:path');
 const SESSIONS_CHECK_REPORT = path.join(os.tmpdir(), 'formation-copilot-check-report');
 const RESERVE_STAGIAIRE = /notes[-_ ]?tp/;
 const RESERVE_CHECK_REPORT = /referentiel-regles|regles-metier/;
-const RESERVE_MCP = /serveur-scores|scores-tournoi\.json|mcp[\\/_ -]*readme/;
+const RESERVE_MCP = /serveur-scores|scores-tournoi\.json|sink\.mjs|mcp[\\/_ -]*readme/;
 const LANCEMENT_CHECK_REPORT = /\/check-report|tu es correcteur\. tu compares un livrable/;
 const OUTIL_ECRITURE = /create|replace|insert|edit|patch|write/i;
 

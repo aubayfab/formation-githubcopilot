@@ -8,13 +8,15 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -k -n arcade,sink \"vite\" \"node mcp/sink.mjs\"",
     "build": "tsc && vite build",
     "test": "vitest run",
-    "lint": "prettier --check ."
+    "lint": "prettier --check .",
+    "sink": "node mcp/sink.mjs"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "concurrently": "^9.1.0",
     "prettier": "^3.9.7",
     "typescript": "~5.9.3",
     "vite": "^7.3.6",

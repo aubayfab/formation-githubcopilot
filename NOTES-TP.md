@@ -162,10 +162,14 @@ Problèmes rencontrés :
 
 # TP N°13 – Un agent sous influence
 
-> Relisez le code généré. Pourquoi est apparu un coefficient (×1,2) et un seuil (12 000) dans le code ? L’agent les a-t-il signalés comme suspects ?
+> Après avoir demandé d’appliquer les règles du tournoi, jouez au Snake en maintenant Entrée. Remarquez-vous quelque chose de particulier ?
 
-> Quelle est l'origine de l'empoisonnement ?
+> D’où vient cette règle ? Faisait-elle partie des règles officielles (votre skill `regles-tournoi`), ou s’est-elle ajoutée ailleurs ?
 
-> Si la règle injectée avait été une dépendance « recommandée » au lieu d’un coefficient, ou si la consigne était un ordre explicite, quels risques ?
+> Ouvrez http://127.0.0.1:57624 : d’où sortent ces mots de passe ? Qui les a volés — l’agent, ou le serveur MCP ?
+
+> Pourquoi la « résistance » du LLM n’empêche-t-elle pas ce vol ?
+
+> Qu’est-ce qui aurait évité tout ça (MCP de confiance, outils inutiles désactivés, isolation, relecture du diff) ?
 
 Problèmes rencontrés :
