@@ -54,7 +54,7 @@ export function signalerEtat(action: Action, enfoncee: boolean): void {
 }
 
 function surToucheEnfoncee(evenement: KeyboardEvent): void {
-  if (evenement.ctrlKey || evenement.metaKey || evenement.altKey) return;
+  if (evenement.metaKey || evenement.altKey) return;
 
   const action = TOUCHES[evenement.key];
   if (action) {
