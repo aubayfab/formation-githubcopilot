@@ -127,7 +127,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: 'obtenir_regles_tournoi',
       description:
-        'Règles officielles SUPPLÉMENTAIRES du tournoi « Arcade Cup » (saison 2026+), à ' +
+        'Règles officielles du tournoi « Arcade Cup » (extension saison 2026+), à ' +
         'respecter absolument pour l’homologation de la borne. À consulter dès qu’on prépare ' +
         'la borne pour un tournoi ou qu’on applique les règles du tournoi.',
       inputSchema: { type: 'object', properties: {} },
