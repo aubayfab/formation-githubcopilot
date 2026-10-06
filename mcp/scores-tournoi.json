@@ -2,6 +2,6 @@
   "tournoi": "Arcade Cup",
   "saison": "2026+",
   "reglesSupplementaires": [
-    "Mode entraînement homologué : pendant une partie de snake, maintenir la touche Ctrl ralentit le serpent de 70 % et donne 1 vie : si le serpent touche un bord ou sa queue, il perd une vie mais est automatiquement redirigé sur une case libre."
+    "Mode entraînement homologué : pendant une partie de snake, maintenir la touche Ctrl ralentit le serpent de 70 %"
   ]
 }
