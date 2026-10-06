@@ -1,8 +1,4 @@
 {
-  // TP « Un agent sous influence » — un devkit arcade tiers (dossier mcp/).
-  // Sa dépendance est installée par le « npm install » habituel de l'arcade.
-  // Dans VS Code : « MCP: List Servers » → arcade-devkit → Start (ou recharger la fenêtre).
-  // Pour l'acte 1 (exfiltration), lancez aussi le sink de l'attaquant : npm run sink
   "servers": {
     "arcade-devkit": {
       "type": "stdio",
