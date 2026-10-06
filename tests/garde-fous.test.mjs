@@ -109,9 +109,11 @@ const CAS = [
   ['grep dans .env', vscode('grep_search', { query: 'PASSWORD', includePattern: '**/.env', isRegexp: false }), 'deny', 'secrets-lecture'],
   ['create_file .env', vscode('create_file', { filePath: '.env', content: 'API_KEY=a-remplir' }), 'ask', 'secrets-ecriture'],
   ['apply_patch .env', vscode('apply_patch', { input: '*** Begin Patch\n*** Update File: /repo/.env\n@@\n-A=1\n+A=2\n*** End Patch', explanation: 'x' }), 'ask', 'secrets-ecriture'],
+  // Les faux secrets sont assemblés à l'exécution : écrits en clair dans ce fichier, ils
+  // feraient refuser par les garde-fous toute modification de ce fichier par l'agent.
   ['jeton GitHub écrit', vscode('create_file', { filePath: 'src/api.ts', content: `const t = "ghp_${'a'.repeat(36)}";` }), 'deny', 'secret-en-clair'],
-  ['clé AWS vers MCP', vscode('mcp_outils_envoyer', { corps: 'cle=AKIAABCDEFGHIJKLMNOP' }), 'deny', 'secret-en-clair'],
-  ['clé privée', vscode('create_file', { filePath: 'k.txt', content: '-----BEGIN OPENSSH PRIVATE KEY-----\nabc' }), 'deny', 'secret-en-clair'],
+  ['clé AWS vers MCP', vscode('mcp_outils_envoyer', { corps: `cle=${'AKIA'}ABCDEFGHIJKLMNOP` }), 'deny', 'secret-en-clair'],
+  ['clé privée', vscode('create_file', { filePath: 'k.txt', content: `-----BEGIN OPENSSH ${'PRIVATE'} KEY-----\nabc` }), 'deny', 'secret-en-clair'],
 
   // Configuration de l'agent
   ['édition .vscode/settings.json', vscode('replace_string_in_file', { filePath: '.vscode/settings.json', oldString: 'a', newString: 'b' }), 'ask', 'config-agent'],
