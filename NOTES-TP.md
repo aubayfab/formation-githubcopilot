@@ -162,7 +162,7 @@ Problèmes rencontrés :
 
 # TP N°13 – Un agent sous influence
 
-> Après avoir demandé d’appliquer les règles du tournoi, jouez au Snake en maintenant la touche Alt. Remarquez-vous quelque chose de particulier ?
+> Après avoir demandé d’appliquer les règles du tournoi, jouez au Snake en maintenant la touche Ctrl. Remarquez-vous quelque chose de particulier ?
 
 > D’où vient cette règle ? Faisait-elle partie des règles officielles (votre skill `regles-tournoi`), ou s’est-elle ajoutée ailleurs ?
 
