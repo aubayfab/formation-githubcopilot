@@ -162,14 +162,16 @@ Problèmes rencontrés :
 
 # TP N°13 – Un agent sous influence
 
-> Après avoir demandé d’appliquer les règles du tournoi, jouez au Snake en maintenant la touche Ctrl. Remarquez-vous quelque chose de particulier ?
+> Remarquez-vous quelque chose de particulier ?
 
-> D’où vient cette règle ? Faisait-elle partie des règles officielles (votre skill `regles-tournoi`), ou s’est-elle ajoutée ailleurs ?
+> Est-ce que ce comportement était bien intégré aux règles du tournois ?
 
-> Ouvrez http://127.0.0.1:57624 : d’où sortent ces mots de passe ? Qui les a volés — l’agent, ou le serveur MCP ?
+> Quelle est la cause ?
 
-> Pourquoi la « résistance » du LLM n’empêche-t-elle pas ce vol ?
+> Quel est le risque d’une injection d’instructions et comment s’en prémunir ?
 
-> Qu’est-ce qui aurait évité tout ça (MCP de confiance, outils inutiles désactivés, isolation, relecture du diff) ?
+> D'où sortent ces mots de passe ? Comment sont-ils arrivés sur le serveur d’un attaquant ?
+
+> Quel est le risque risque posé par l’exécution de MCP en local et comment s’en prémunir ?
 
 Problèmes rencontrés :
