@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "atelier-plugins",
+  "version": "1.0.0",
+  "description": "Créer et publier des plugins dans une marketplace Copilot : empaqueter des skills, agents et instructions existants, valider la marketplace comme le feront VS Code et Copilot CLI, incrémenter la version et tenir le changelog.",
+  "author": {
+    "name": "Formation GitHub Copilot",
+    "url": "https://github.com/aubayfab"
+  },
+  "homepage": "https://github.com/aubayfab/formation-githubcopilot/tree/marketplace/plugins/atelier-plugins",
+  "repository": "https://github.com/aubayfab/formation-githubcopilot",
+  "keywords": ["plugins", "marketplace", "publication", "versions", "validation"]
+}

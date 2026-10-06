@@ -1,0 +1,41 @@
+name: Valider la marketplace
+
+on:
+  push:
+    branches: [marketplace]
+  pull_request:
+    branches: [marketplace]
+
+permissions:
+  contents: read
+
+jobs:
+  valider:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Tests des scripts des plugins
+        run: npm test
+
+      # Sur une pull request, la référence est la branche visée ; sur un push, le
+      # commit précédent, s'il existe encore (premier push, push forcé).
+      - name: Validation du catalogue, des plugins et des versions
+        env:
+          EVENEMENT: ${{ github.event_name }}
+          BRANCHE_VISEE: ${{ github.base_ref }}
+          AVANT: ${{ github.event.before }}
+        run: |
+          base=""
+          if [ "$EVENEMENT" = "pull_request" ]; then
+            base="origin/$BRANCHE_VISEE"
+          elif [ -n "$AVANT" ] && git cat-file -e "$AVANT^{commit}" 2>/dev/null; then
+            base="$AVANT"
+          fi
+          node plugins/atelier-plugins/skills/publier-plugin/scripts/valider.mjs ${base:+--base "$base"}

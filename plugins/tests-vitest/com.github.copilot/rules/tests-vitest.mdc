@@ -1,0 +1,16 @@
+---
+name: Tests Vitest
+description: Conventions pour écrire ou modifier un test Vitest.
+applyTo: '**/*.{test,spec}.{ts,tsx,js,jsx,mts,mjs}'
+globs: ['**/*.test.ts', '**/*.spec.ts', '**/*.test.tsx', '**/*.spec.tsx', '**/*.test.js', '**/*.spec.js', '**/*.test.mjs', '**/*.spec.mjs']
+---
+
+# Tests Vitest
+
+- Importer explicitement depuis `vitest` (`describe`, `it`, `expect`, `vi`) : ne pas compter sur les globales.
+- Un `it` par comportement, nommé par une phrase qui le décrit, dans la langue des tests existants.
+- Le résultat attendu vient de la spécification, pas de la sortie actuelle du code.
+- Aucune dépendance au temps réel, au hasard, au réseau ou à l'ordre des tests : faux timers, générateur injecté ou `vi.spyOn(Math, 'random')`, stockage en mémoire neuf à chaque test.
+- Tout ce qui est remplacé est restauré dans `afterEach` : `vi.useRealTimers()`, `vi.restoreAllMocks()`, `vi.unstubAllGlobals()`.
+- Pas d'instantané pour de la logique ; pas d'`it.only`, d'`it.skip` ni de `console.log` laissés dans le fichier.
+- Pour écrire une série de tests ou reproduire un bug, utiliser la skill `ecrire-tests`.

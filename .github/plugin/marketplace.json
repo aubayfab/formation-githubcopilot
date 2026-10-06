@@ -1,0 +1,56 @@
+{
+  "name": "formation-copilot",
+  "owner": {
+    "name": "Formation GitHub Copilot"
+  },
+  "metadata": {
+    "description": "Plugins de la formation GitHub Copilot : garde-fous de sécurité, tests Vitest déterministes, documentation à jour et outillage pour créer et publier ses propres plugins.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "garde-fous",
+      "source": "./plugins/garde-fous",
+      "description": "Hook PreToolUse qui empêche l'agent de lancer des commandes destructrices, de lire ou d'exfiltrer des secrets et de modifier sa propre configuration. Refus ou confirmation, avec une alternative proposée à chaque fois.",
+      "version": "1.0.0",
+      "author": { "name": "Formation GitHub Copilot", "url": "https://github.com/aubayfab" },
+      "homepage": "https://github.com/aubayfab/formation-githubcopilot/tree/marketplace/plugins/garde-fous",
+      "repository": "https://github.com/aubayfab/formation-githubcopilot",
+      "keywords": ["securite", "hooks", "pretooluse", "secrets", "exfiltration", "garde-fous"],
+      "category": "securite"
+    },
+    {
+      "name": "tests-vitest",
+      "source": "./plugins/tests-vitest",
+      "description": "Tests Vitest déterministes : une skill pour écrire des tests et reproduire des bugs (temps, hasard, stockage, Canvas), un rapport de tests économe en contexte, des conventions appliquées aux fichiers de test et un agent testeur qui ne touche pas au code de production.",
+      "version": "1.0.0",
+      "author": { "name": "Formation GitHub Copilot", "url": "https://github.com/aubayfab" },
+      "homepage": "https://github.com/aubayfab/formation-githubcopilot/tree/marketplace/plugins/tests-vitest",
+      "repository": "https://github.com/aubayfab/formation-githubcopilot",
+      "keywords": ["tests", "vitest", "typescript", "tdd", "non-regression"],
+      "category": "tests"
+    },
+    {
+      "name": "docs-a-jour",
+      "source": "./plugins/docs-a-jour",
+      "description": "Documentation à jour au lieu de souvenirs d'entraînement : le serveur MCP Context7 et une skill qui interroge la doc de la version réellement installée dans le projet, source citée.",
+      "version": "1.0.0",
+      "author": { "name": "Formation GitHub Copilot", "url": "https://github.com/aubayfab" },
+      "homepage": "https://github.com/aubayfab/formation-githubcopilot/tree/marketplace/plugins/docs-a-jour",
+      "repository": "https://github.com/aubayfab/formation-githubcopilot",
+      "keywords": ["documentation", "mcp", "context7", "versions", "hallucinations"],
+      "category": "documentation"
+    },
+    {
+      "name": "atelier-plugins",
+      "source": "./plugins/atelier-plugins",
+      "description": "Créer et publier des plugins dans une marketplace Copilot : empaqueter des skills, agents et instructions existants, valider la marketplace comme le feront VS Code et Copilot CLI, incrémenter la version et tenir le changelog.",
+      "version": "1.0.0",
+      "author": { "name": "Formation GitHub Copilot", "url": "https://github.com/aubayfab" },
+      "homepage": "https://github.com/aubayfab/formation-githubcopilot/tree/marketplace/plugins/atelier-plugins",
+      "repository": "https://github.com/aubayfab/formation-githubcopilot",
+      "keywords": ["plugins", "marketplace", "publication", "versions", "validation"],
+      "category": "outillage"
+    }
+  ]
+}

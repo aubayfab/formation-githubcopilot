@@ -1,0 +1,14 @@
+{
+  "name": "formation-copilot-marketplace",
+  "private": true,
+  "description": "Marketplace de plugins GitHub Copilot de la formation : catalogue, plugins et leurs tests.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "valider": "node plugins/atelier-plugins/skills/publier-plugin/scripts/valider.mjs",
+    "valider:base": "node plugins/atelier-plugins/skills/publier-plugin/scripts/valider.mjs --base origin/marketplace"
+  }
+}

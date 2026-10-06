@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "docs-a-jour",
+  "version": "1.0.0",
+  "description": "Documentation à jour au lieu de souvenirs d'entraînement : le serveur MCP Context7 et une skill qui interroge la doc de la version réellement installée dans le projet, source citée.",
+  "author": {
+    "name": "Formation GitHub Copilot",
+    "url": "https://github.com/aubayfab"
+  },
+  "homepage": "https://github.com/aubayfab/formation-githubcopilot/tree/marketplace/plugins/docs-a-jour",
+  "repository": "https://github.com/aubayfab/formation-githubcopilot",
+  "keywords": ["documentation", "mcp", "context7", "versions", "hallucinations"]
+}
