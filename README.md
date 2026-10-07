@@ -29,7 +29,7 @@ La marketplace est la branche `marketplace` du dépôt `aubayfab/formation-githu
    ]
    ```
 
-2. Vue **Extensions**, tapez `@agentPlugins` tel quel dans la recherche : ce filtre affiche les plugins des marketplaces configurées. Ajoutez un mot pour affiner, sans `@` (`@agentPlugins garde-fous`). **Install** sur celui qui vous intéresse. À la première installation depuis cette marketplace, VS Code demande de lui faire confiance.
+2. Commande **Chat: Plugins** : elle ouvre la vue **Extensions** filtrée par `@agentPlugins`, qui affiche les plugins des marketplaces configurées. Un mot ajouté après le filtre, sans `@`, affine la liste ; il est comparé au nom, à la description et au dépôt de chaque plugin. `@agentPlugins formation-githubcopilot` montre donc les plugins de cette marketplace, alors que `@agentPlugins formation-copilot` (le nom du catalogue) ne trouve rien. **Install** sur celui qui vous intéresse. À la première installation depuis cette marketplace, VS Code demande de lui faire confiance.
 
    On y accède aussi par **Chat: Open Customizations**, onglet **Plugins**, **Browse Marketplace**.
 
