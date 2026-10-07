@@ -16,7 +16,7 @@ const ENTETE_PATCH = /^(?:\*\*\* (?:add|update|delete) file:|\*\*\* move to:|\+\
 const VERBES_SANS_LECTURE = new Set([
   'echo', 'printf', 'write-output', 'write-host', 'add-content', 'ac',
   'ls', 'll', 'dir', 'gci', 'get-childitem', 'test-path', 'stat', 'touch',
-  'new-item', 'ni', 'mkdir', 'md', 'rm', 'del', 'erase', 'remove-item', 'ri',
+  'new-item', 'ni', 'mkdir', 'md', 'rm', 'del', 'erase', 'remove-item', 'ri', 'rimraf',
   'cd', 'pushd', 'popd', 'set-location', 'sl',
 ]);
 const GIT_SANS_LECTURE = new Set(['rm', 'check-ignore', 'ls-files', 'status']);
@@ -34,6 +34,17 @@ const GIT_MODIFICATION = new Set(['checkout', 'restore', 'reset', 'clean', 'mv',
 
 // Préfixes qui ne changent pas la commande réellement lancée.
 const PREFIXE = /^(sudo|doas|nohup|time|command|exec|env|[a-z_][a-z0-9_]*=.*)$/i;
+
+// Lanceurs dont un argument est lui-même une ligne de commande : cmd /c "…",
+// & $env:ComSpec /c "…", powershell -Command "…", bash -c "…". C'est la commande
+// lancée qui est analysée, y compris quand PowerShell la reçoit encodée en base64.
+const LANCEURS = new Set(['cmd', '$env:comspec', '%comspec%', 'powershell', 'pwsh', 'bash', 'sh', 'zsh', 'dash']);
+const OPTION_COMMANDE = /^(\/c|\/k|-c|-command)$/i;
+const OPTION_COMMANDE_ENCODEE = /^-(e|ec|enc|encodedcommand)$/i;
+// Exécuteurs dont les arguments, après leurs propres options, forment la commande lancée.
+const EXECUTEURS = new Set(['npx', 'pnpx', 'bunx', 'wsl']);
+const OPTION_A_VALEUR = /^(-p|--package|-d|--distribution|-u|--user)$/i;
+const IMBRICATION_MAX = 3;
 
 /** Chemin comparable : décodé, minuscules, séparateurs « / », sans guillemets ni « ./ ». */
 export function normaliserChemin(valeur) {
@@ -72,12 +83,31 @@ export function mots(texte) {
   return resultat;
 }
 
+/** Commande lancée par un lanceur ou un exécuteur (voir LANCEURS), ou null. */
+function commandeLancee(verbe, args) {
+  if (LANCEURS.has(verbe)) {
+    const encodee = args.findIndex((argument) => OPTION_COMMANDE_ENCODEE.test(argument));
+    if (encodee >= 0 && (verbe === 'powershell' || verbe === 'pwsh') && args[encodee + 1]) {
+      return Buffer.from(args[encodee + 1], 'base64').toString('utf16le');
+    }
+    const position = args.findIndex((argument) => OPTION_COMMANDE.test(argument));
+    return position >= 0 ? args.slice(position + 1).join(' ') || null : null;
+  }
+  if (EXECUTEURS.has(verbe)) {
+    let i = 0;
+    while (i < args.length && args[i].startsWith('-')) i += OPTION_A_VALEUR.test(args[i]) ? 2 : 1;
+    return args.slice(i).join(' ') || null;
+  }
+  return null;
+}
+
 /**
  * Sépare les commandes enchaînées (« ; », « && », « || », « | », « & », retour à la
  * ligne) et donne pour chacune son verbe et ses arguments. Les redirections vers le
- * néant (« 2>&1 », « >/dev/null », « 2>$null ») sont retirées au préalable.
+ * néant (« 2>&1 », « >/dev/null », « 2>$null ») sont retirées au préalable, et une
+ * commande lancée par cmd, PowerShell, bash, npx… est remplacée par ce qu'elle lance.
  */
-export function segments(commande) {
+export function segments(commande, imbrication = 0) {
   const nettoyee = commande
     .replace(/\d*>&\d+/g, ' ')
     .replace(/\d*>>?\s*(\$null|\/dev\/null|nul)(?![\w/])/gi, ' ');
@@ -100,20 +130,33 @@ export function segments(commande) {
   }
   if (courant.trim()) textes.push(courant.trim());
 
-  return textes.map((texte) => {
+  return textes.flatMap((texte) => {
     const liste = mots(texte);
     while (liste.length > 1 && PREFIXE.test(liste[0])) liste.shift();
     const verbe = (liste[0] ?? '').replace(/^.*[\\/]/, '').replace(/\.exe$/i, '').toLowerCase();
-    return { texte, verbe, args: liste.slice(1) };
+    const args = liste.slice(1);
+    const lancee = imbrication < IMBRICATION_MAX ? commandeLancee(verbe, args) : null;
+    return lancee ? segments(lancee, imbrication + 1) : [{ texte, verbe, args }];
   });
 }
 
-/** Mots d'un texte qui pourraient être des chemins, y compris dans « --opt=chemin », « @chemin » ou « (chemin) ». */
+/**
+ * Ce qui, dans un texte, pourrait être un chemin : les chemins Windows absolus, espaces
+ * compris (« C:\Formation Copilot\.env »), chaque mot, et les morceaux d'un mot
+ * (« --opt=chemin », « @chemin », « open('chemin') »). Les chemins entiers d'abord, pour
+ * que le message cite le fichier complet.
+ */
 function cheminsCandidats(texte) {
-  return texte
-    .split(/[\s"'`;|&<>(),=@]+/)
-    .filter(Boolean)
-    .map(normaliserChemin);
+  const candidats = new Set();
+  for (const [chemin] of texte.matchAll(/[a-z]:[\\/][^"'`<>|;&*?\n]*/gi)) candidats.add(normaliserChemin(chemin.trimEnd()));
+  for (const mot of mots(texte)) {
+    candidats.add(normaliserChemin(mot));
+    for (const morceau of mot.split(/[\s"'`;|&<>(),=@]+/)) {
+      if (morceau) candidats.add(normaliserChemin(morceau));
+    }
+  }
+  candidats.delete('');
+  return [...candidats];
 }
 
 /** Fichiers visés par une redirection de sortie (« > fichier », « >> fichier »). */

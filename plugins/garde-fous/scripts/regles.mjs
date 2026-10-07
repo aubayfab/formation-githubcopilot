@@ -57,7 +57,7 @@ const RACINES = new RegExp(
     ].join('|') +
     ')$',
 );
-const VERBES_SUPPRESSION = new Set(['rm', 'remove-item', 'ri', 'del', 'erase', 'rd', 'rmdir']);
+const VERBES_SUPPRESSION = new Set(['rm', 'remove-item', 'ri', 'del', 'erase', 'rd', 'rmdir', 'rimraf']);
 
 function sansSeparateurFinal(chemin) {
   let resultat = chemin;
@@ -69,7 +69,7 @@ function sansSeparateurFinal(chemin) {
 function suppressionMassive(commande) {
   return segments(commande).some(({ verbe, args }) => {
     if (!VERBES_SUPPRESSION.has(verbe)) return false;
-    let recursif = false;
+    let recursif = verbe === 'rimraf'; // rimraf supprime toujours récursivement
     const cibles = [];
     for (const argument of args) {
       if (/^-[a-z]{1,4}$/i.test(argument) && /r/i.test(argument) && verbe === 'rm') recursif = true; // rm -rf

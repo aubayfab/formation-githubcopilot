@@ -35,7 +35,7 @@ Quand plusieurs règles s'appliquent, le refus l'emporte sur la confirmation.
 
 Le hook reçoit l'appel d'outil en JSON sur son entrée standard. Les noms d'outils et de paramètres diffèrent entre VS Code (`run_in_terminal`, `read_file`…), Copilot CLI (`bash`, `view`…) et le format Claude (`Bash`, `Read`…) : le script parcourt toute l'entrée de l'outil et classe l'outil d'après son nom plutôt que de dépendre d'un champ précis.
 
-Pour une commande, il découpe les commandes enchaînées (`;`, `&&`, `|`…) et estime pour chacune si elle lit ou écrit les fichiers qu'elle nomme : `echo .env >> .gitignore` passe, `cat .env` ou `python -c "open('.env')"` sont refusés. Un verbe inconnu est supposé lire et écrire.
+Pour une commande, il découpe les commandes enchaînées (`;`, `&&`, `|`…) et estime pour chacune si elle lit ou écrit les fichiers qu'elle nomme : `echo .env >> .gitignore` passe, `cat .env` ou `python -c "open('.env')"` sont refusés, `rm .env` demande confirmation. Un verbe inconnu est supposé lire et écrire. Une commande lancée par une autre est analysée pour ce qu'elle lance : `cmd /c "…"`, `& $env:ComSpec /c "…"`, `powershell -Command "…"` (y compris `-EncodedCommand`), `bash -c "…"`, `npx …`, `wsl …`.
 
 La réponse est écrite à la fois au format de VS Code (`hookSpecificOutput`) et à celui de Copilot CLI (`permissionDecision` au premier niveau). Un refus ajoute au contexte du modèle une consigne : ne pas chercher à obtenir le même résultat par un autre chemin.
 

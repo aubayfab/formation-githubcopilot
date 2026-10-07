@@ -125,6 +125,19 @@ const CAS = [
   ['cat settings.json 2>&1', terminal('cat .vscode/settings.json 2>&1'), null],
   ['Get-Content settings 2>$null', terminal('Get-Content .vscode/settings.json 2>$null'), null],
 
+  // Commandes lancées par une autre (cmd /c, PowerShell, bash -c, npx)
+  ['$env:ComSpec /c rimraf .env', terminal('& $env:ComSpec /c "rimraf C:\\DEV\\workspaces\\Formation Copilot\\tp\\.env"'), 'ask', 'secrets-ecriture'],
+  ['rm .env', terminal('rm .env'), 'ask', 'secrets-ecriture'],
+  ['cmd /c type .env', terminal('cmd /c "type .env"'), 'deny', 'secrets-lecture'],
+  ['powershell -Command Get-Content', terminal('powershell -NoProfile -Command "Get-Content .env"'), 'deny', 'secrets-lecture'],
+  ['powershell -EncodedCommand', terminal(`powershell -enc ${Buffer.from('Get-Content .env', 'utf16le').toString('base64')}`), 'deny', 'secrets-lecture'],
+  ["bash -c cat '.env'", terminal(`bash -c "cat '.env'"`), 'deny', 'secrets-lecture'],
+  ['wsl cat .env', terminal('wsl cat .env'), 'deny', 'secrets-lecture'],
+  ['cmd /c rd /s C:\\', terminal('cmd.exe /c "rd /s /q C:\\"'), 'deny', 'suppression-massive'],
+  ['npx rimraf ~', terminal('npx -y rimraf ~'), 'deny', 'suppression-massive'],
+  ['npx rimraf dist', terminal('npx rimraf dist'), null],
+  ['cmd /c npm test', terminal('cmd /c "npm test && npm run build"'), null],
+
   // Divers
   ['commande démesurée', terminal(`echo ${'a'.repeat(9000)}`), 'ask', 'commande-trop-longue'],
   ['Claude Bash rm -rf /', vscode('Bash', { command: 'rm -rf /' }), 'deny', 'suppression-massive'],
@@ -145,6 +158,13 @@ test('le refus l’emporte sur la confirmation et cite chaque règle', () => {
   assert.equal(resultat.decision, 'deny');
   assert.deepEqual(resultat.regles, ['suppression-massive']);
   assert.match(resultat.reponse.hookSpecificOutput.additionalContext, /N'essayez pas/);
+});
+
+test('le message cite le chemin complet, espaces compris', () => {
+  const { reponse } = verdict(terminal('cat "C:\\Mon Projet\\.env"'));
+  assert.match(reponse.permissionDecisionReason, /« c:\/mon projet\/\.env »/);
+  const lance = verdict(terminal('& $env:ComSpec /c "rimraf C:\\DEV\\workspaces\\Formation Copilot\\tp\\.env"'));
+  assert.match(lance.reponse.permissionDecisionReason, /« c:\/dev\/workspaces\/formation copilot\/tp\/\.env »/);
 });
 
 test('la réponse suit le format de VS Code et celui du CLI', () => {
