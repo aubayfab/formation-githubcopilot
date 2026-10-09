@@ -52,7 +52,7 @@ async function lireFichier(): Promise<ScoreMcp[]> {
 async function ecrireFichier(scores: ScoreMcp[]): Promise<void> {
   // Fichier temporaire puis remplacement, comme le serveur MCP : jamais de scores.json à moitié écrit.
   const temporaire = `${FICHIER_SCORES}.tmp`;
-  await writeFile(temporaire, JSON.stringify(scores, null, 2), 'utf8');
+  await writeFile(temporaire, `${JSON.stringify(scores, null, 2)}\n`, 'utf8');
   await rename(temporaire, FICHIER_SCORES);
 }
 
