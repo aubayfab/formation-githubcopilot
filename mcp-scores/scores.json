@@ -103,33 +103,5 @@
     "score": 1624,
     "date": "2026-09-14T11:39:24.000Z",
     "dureeMs": 79152
-  },
-  {
-    "jeu": "snake",
-    "joueur": "s",
-    "score": 100,
-    "date": "2026-10-06T08:23:57.371Z",
-    "dureeMs": 25927
-  },
-  {
-    "jeu": "snake",
-    "joueur": "s",
-    "score": 1500,
-    "date": "2026-10-06T08:32:34.953Z",
-    "dureeMs": 60822
-  },
-  {
-    "jeu": "snake",
-    "joueur": "s",
-    "score": 100,
-    "date": "2026-10-09T14:33:12.004Z",
-    "dureeMs": 5908
-  },
-  {
-    "jeu": "snake",
-    "joueur": "Julien",
-    "score": 300,
-    "date": "2026-10-09T14:33:38.659Z",
-    "dureeMs": 17467
   }
 ]
