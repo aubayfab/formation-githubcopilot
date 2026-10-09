@@ -1,7 +1,8 @@
 // Protège les fichiers réservés :
 // - NOTES-TP.md, la grille du stagiaire : aucun agent ne la lit ni ne l'écrit ;
 // - le référentiel des règles et les rapports (règles-métier*.md) : les agents écrivent
-//   leurs rapports, mais seule une session lancée par /check-report peut les lire.
+//   leurs rapports, mais seule une session lancée par /check-report peut les lire ;
+// - mcp-scores/scores.json, les scores de la borne : les agents passent par le serveur MCP.
 // UserPromptSubmit note les sessions lancées par /check-report ; PreToolUse refuse
 // les appels d'outils qui visent un fichier protégé.
 // Pour une lecture, on teste l'entrée complète de l'outil plutôt qu'un champ précis :
@@ -14,6 +15,7 @@ const SESSIONS_CHECK_REPORT = path.join(os.tmpdir(), 'formation-copilot-check-re
 const RESERVE_STAGIAIRE = /notes[-_ ]?tp/;
 const RESERVE_CHECK_REPORT = /referentiel-regles|regles-metier/;
 const RESERVE_MCP = /serveur-scores|scores-tournoi\.json|sink\.mjs|mcp[\\/_ -]*readme/;
+const RESERVE_SCORES = /scores\.json/;
 const LANCEMENT_CHECK_REPORT = /\/check-report|tu es correcteur\. tu compares un livrable/;
 const OUTIL_ECRITURE = /create|replace|insert|edit|patch|write/i;
 
@@ -41,6 +43,19 @@ function fichiersEcrits(valeur, cle = '') {
   }
   if (valeur && typeof valeur === 'object') {
     return Object.entries(valeur).flatMap(([k, v]) => fichiersEcrits(v, Array.isArray(valeur) ? cle : k));
+  }
+  return [];
+}
+
+// Chemins, commandes et recherches d'un appel d'outil, sans le texte libre ni le contenu écrit.
+// scores.json est cité dans le prompt du TP, donc dans les plans et listes de tâches de l'agent :
+// tester toute l'entrée de l'outil bloquerait la génération du serveur.
+function cheminsEtCommandes(valeur, cle = '') {
+  if (typeof valeur === 'string') {
+    return /command|query|pattern/i.test(cle) ? [valeur] : fichiersEcrits(valeur, cle);
+  }
+  if (valeur && typeof valeur === 'object') {
+    return Object.entries(valeur).flatMap(([k, v]) => cheminsEtCommandes(v, Array.isArray(valeur) ? cle : k));
   }
   return [];
 }
@@ -80,7 +95,9 @@ function noterCheckReport(evenement, fichier) {
 }
 
 function controlerAppel(evenement, texte, fichier) {
-  if (OUTIL_ECRITURE.test(String(evenement.tool_name ?? evenement.toolName ?? ''))) {
+  if (RESERVE_SCORES.test(normaliser(cheminsEtCommandes(lireParametres(evenement)).join('\n')))) {
+    refuser('Scores de la borne : les agents passent par les outils du serveur MCP, pas par le fichier.');
+  } else if (OUTIL_ECRITURE.test(String(evenement.tool_name ?? evenement.toolName ?? ''))) {
     const cibles = fichiersEcrits(lireParametres(evenement));
     if (RESERVE_STAGIAIRE.test(cibles.length ? normaliser(cibles.join('\n')) : texte)) {
       refuser('Fichier réservé au stagiaire : les agents ne doivent pas le modifier.');

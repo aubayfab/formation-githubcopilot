@@ -7,6 +7,7 @@
     "**/règles-métier*.md": true,
     "**/mcp/serveur-scores.js": true,
     "**/mcp/scores-tournoi.json": true,
-    "**/mcp/README.md": true
+    "**/mcp/README.md": true,
+    "**/mcp-scores/scores.json": true
   }
 }

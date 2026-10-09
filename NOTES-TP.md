@@ -175,3 +175,13 @@ Problèmes rencontrés :
 > Quel est le risque risque posé par l’exécution de MCP en local et comment s’en prémunir ?
 
 Problèmes rencontrés :
+
+# TP N°15 – Faites votre propre MCP
+
+> Le serveur démarre-t-il avec uv run serveur.py ?
+
+> Le client reçoit-il une erreur de protocole ou un résultat ? Qu’en fera le modèle ?
+
+> Que se passe-t-il, où le voir, et comment journaliser sans casser le serveur ?
+
+Problèmes rencontrés :
