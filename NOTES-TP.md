@@ -176,6 +176,14 @@ Problèmes rencontrés :
 
 Problèmes rencontrés :
 
+# TP N°14 - Les marketplaces
+
+> Où se trouve le script rapport-vitest.mjs qui a été exécuté ?
+
+> Pourquoi cette lecture a échoué, d’où sort ce hook ?
+
+> Quelles modifications cette skill a-t-elle automatisées ?
+
 # TP N°15 – Faites votre propre MCP
 
 > Le serveur démarre-t-il avec uv run serveur.py ?
