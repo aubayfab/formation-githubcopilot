@@ -36,10 +36,11 @@ function normaliser(texte) {
 
 // Fichiers visés par un outil d'écriture : champs de chemin et en-têtes d'un patch.
 // Le contenu écrit n'est pas testé : un rapport peut citer NOTES-TP ou le référentiel.
+// « file_text » (outil create de Copilot CLI) est un contenu, pas un chemin.
 function fichiersEcrits(valeur, cle = '') {
   if (typeof valeur === 'string') {
     const entetes = [...valeur.matchAll(/\*\*\* (?:add|update|delete) file: (.+)/gi)].map((m) => m[1]);
-    return /path|uri|file/i.test(cle) ? [valeur, ...entetes] : entetes;
+    return /path|uri|file/i.test(cle) && !/text|content|code/i.test(cle) ? [valeur, ...entetes] : entetes;
   }
   if (valeur && typeof valeur === 'object') {
     return Object.entries(valeur).flatMap(([k, v]) => fichiersEcrits(v, Array.isArray(valeur) ? cle : k));
@@ -52,7 +53,7 @@ function fichiersEcrits(valeur, cle = '') {
 // tester toute l'entrée de l'outil bloquerait la génération du serveur.
 function cheminsEtCommandes(valeur, cle = '') {
   if (typeof valeur === 'string') {
-    return /command|query|pattern/i.test(cle) ? [valeur] : fichiersEcrits(valeur, cle);
+    return /command|query|pattern|glob/i.test(cle) ? [valeur] : fichiersEcrits(valeur, cle);
   }
   if (valeur && typeof valeur === 'object') {
     return Object.entries(valeur).flatMap(([k, v]) => cheminsEtCommandes(v, Array.isArray(valeur) ? cle : k));
