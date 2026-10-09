@@ -1,8 +1,8 @@
 # Arcade
 
-Une arcade rétro dans le navigateur. Le shell affiche un cadre d'arcade avec effet cathodique et un menu qui lance trois mini-jeux. Un tableau des scores commun aux trois jeux est conservé dans le `localStorage` et partagé avec le fichier `mcp-scores/scores.json`, qui contient les scores initiaux.
+Une arcade rétro dans le navigateur. Le shell affiche un cadre d'arcade avec effet cathodique et un menu qui lance trois mini-jeux. Un tableau des scores commun aux trois jeux est stocké dans `mcp-scores/scores.json`, qui contient aussi les scores initiaux.
 
-TypeScript strict, Vite, Vitest et Prettier. Aucun framework de rendu : tout est dessiné en DOM et en Canvas 2D. Pas de backend : en développement, le serveur Vite expose seulement la route `/api/scores`, qui lit et complète `mcp-scores/scores.json`. Au démarrage, l'arcade fusionne ce fichier avec son `localStorage` ; après chaque partie, elle y ajoute le score. Sans ce serveur (build de `dist/`), le tableau démarre vide.
+TypeScript strict, Vite, Vitest et Prettier. Aucun framework de rendu : tout est dessiné en DOM et en Canvas 2D. Pas de backend : en développement, le serveur Vite expose seulement la route `/api/scores`, qui lit et complète `mcp-scores/scores.json`. L'arcade charge ce fichier au démarrage, puis y ajoute chaque nouveau score. Sans ce serveur (build de `dist/`), le tableau démarre vide et les parties ne sont pas conservées.
 
 ## Prérequis
 

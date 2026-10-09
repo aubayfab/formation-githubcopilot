@@ -1,7 +1,5 @@
-import { existsSync } from 'node:fs';
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import type { Plugin } from 'vite';
@@ -42,7 +40,9 @@ function estScoreBorne(valeur: unknown): valeur is ScoreBorne {
 async function lireFichier(): Promise<ScoreMcp[]> {
   try {
     // Le BOM est retiré : le fichier peut avoir été enregistré à la main sous Windows.
-    const donnees: unknown = JSON.parse((await readFile(FICHIER_SCORES, 'utf8')).replace(/^﻿/, ''));
+    const donnees: unknown = JSON.parse(
+      (await readFile(FICHIER_SCORES, 'utf8')).replace(/^\uFEFF/, ''),
+    );
     return Array.isArray(donnees) ? donnees : [];
   } catch {
     return [];
@@ -68,9 +68,9 @@ function repondre(res: ServerResponse, statut: number, donnees: unknown): void {
 }
 
 /**
- * Expose `/api/scores` sur le serveur de dev, pour que la borne partage ses scores avec le
- * serveur MCP via mcp-scores/scores.json. GET renvoie les scores du fichier, POST y ajoute
- * un score ou une liste de scores.
+ * Expose `/api/scores` sur le serveur de dev : la borne stocke ses scores dans
+ * mcp-scores/scores.json, partagé avec le serveur MCP. GET renvoie les scores du fichier,
+ * POST y ajoute un score.
  */
 function scoresMcp(): Plugin {
   // Les écritures sont enchaînées pour ne jamais perdre un score entre lecture et écriture.
@@ -91,30 +91,24 @@ function scoresMcp(): Plugin {
             }));
             repondre(res, 200, scores);
           } else if (req.method === 'POST') {
-            if (!existsSync(dirname(FICHIER_SCORES))) {
-              // Serveur MCP pas encore créé : rien à partager, et aucune erreur dans la console.
-              res.writeHead(204).end();
-              return;
-            }
-            const corps = await lireCorps(req);
-            const recus = Array.isArray(corps) ? corps : [corps];
-            if (!recus.every(estScoreBorne)) {
+            const s = await lireCorps(req);
+            if (!estScoreBorne(s)) {
               repondre(res, 400, { erreur: 'Score invalide.' });
               return;
             }
-            const nouveaux: ScoreMcp[] = recus.map((s) => ({
+            const nouveau: ScoreMcp = {
               jeu: s.jeu,
               joueur: s.pseudo,
               score: s.points,
               date: s.date,
               dureeMs: s.dureeMs,
-            }));
+            };
             const ecriture = file.then(async () =>
-              ecrireFichier([...(await lireFichier()), ...nouveaux]),
+              ecrireFichier([...(await lireFichier()), nouveau]),
             );
             file = ecriture.catch(() => {});
             await ecriture;
-            repondre(res, 201, { ajoutes: nouveaux.length });
+            repondre(res, 201, nouveau);
           } else {
             repondre(res, 405, { erreur: 'Méthode non autorisée.' });
           }
@@ -130,7 +124,7 @@ export default defineConfig({
   plugins: [scoresMcp()],
   server: {
     open: true,
-    host: '127.0.0.1'
+    host: '127.0.0.1',
   },
   test: {
     include: ['test/**/*.test.ts'],

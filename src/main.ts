@@ -7,7 +7,7 @@ import './games/snake';
 import './games/2048';
 import './games/casse-briques';
 
-import { synchroniserScores } from './scores/scoreStore';
+import { chargerScores } from './scores/scoreStore';
 import { construireArcade } from './shell/cabinet';
 import { demarrerClavier } from './shell/input';
 import { demarrerMenu } from './shell/menu';
@@ -20,5 +20,5 @@ demarrerTheme();
 const arcade = construireArcade(racine);
 installerBascule(document.body);
 demarrerClavier();
-await synchroniserScores();
+await chargerScores();
 demarrerMenu(arcade);
