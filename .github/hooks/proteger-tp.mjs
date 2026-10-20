@@ -7,15 +7,22 @@
 // les appels d'outils qui visent un fichier protégé.
 // Pour une lecture, on teste l'entrée complète de l'outil plutôt qu'un champ précis :
 // le nom de l'outil et de ses paramètres varie selon la version de VS Code.
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 const SESSIONS_CHECK_REPORT = path.join(os.tmpdir(), 'formation-copilot-check-report');
 const RESERVE_STAGIAIRE = /notes[-_ ]?tp/;
 const RESERVE_CHECK_REPORT = /referentiel-regles|regles-metier/;
 const RESERVE_MCP = /serveur-scores|scores-tournoi\.json|sink\.mjs|mcp[\\/_ -]*readme/;
-const RESERVE_SCORES = /scores\.json/;
+// Nom exact scores.json : « test-scores.json », « scores.json.bak » ou « scores.json.test.js » restent autorisés.
+const RESERVE_SCORES = /(?<![\w.-])scores\.json(?![\w-]|\.\w)/;
+// Chemin explicite vers le fichier de la borne (mcp-scores/scores.json ou mcp/scores.json).
+const SCORES_BORNE = /mcp(?:-scores)?[\\/]+scores\.json(?![\w-]|\.\w)/;
+// Un scores.json « nu » n'est toléré que dans un dossier temporaire (copie de test), hors cwd ou cd vers mcp.
+const DOSSIER_TEMP = /\$env:te?mp|gettemppath|%te?mp%|\/tmp\/|[\\/]temp[\\/]|tempfile|mkdtemp/;
+const CHANGEMENT_VERS_MCP = /\b(?:cd|set-location|pushd|sl)\s+[^;\n|&]*mcp/;
+const CWD_MCP = /[\\/]mcp(?:-scores)?[\\/]*$/;
 const LANCEMENT_CHECK_REPORT = /\/check-report|tu es correcteur\. tu compares un livrable/;
 const OUTIL_ECRITURE = /create|replace|insert|edit|patch|write/i;
 
@@ -39,11 +46,17 @@ function normaliser(texte) {
 // « file_text » (outil create de Copilot CLI) est un contenu, pas un chemin.
 function fichiersEcrits(valeur, cle = '') {
   if (typeof valeur === 'string') {
-    const entetes = [...valeur.matchAll(/\*\*\* (?:add|update|delete) file: (.+)/gi)].map((m) => m[1]);
-    return /path|uri|file/i.test(cle) && !/text|content|code/i.test(cle) ? [valeur, ...entetes] : entetes;
+    const entetes = [...valeur.matchAll(/\*\*\* (?:add|update|delete) file: (.+)/gi)].map(
+      (m) => m[1],
+    );
+    return /path|uri|file/i.test(cle) && !/text|content|string|body/i.test(cle)
+      ? [valeur, ...entetes]
+      : entetes;
   }
   if (valeur && typeof valeur === 'object') {
-    return Object.entries(valeur).flatMap(([k, v]) => fichiersEcrits(v, Array.isArray(valeur) ? cle : k));
+    return Object.entries(valeur).flatMap(([k, v]) =>
+      fichiersEcrits(v, Array.isArray(valeur) ? cle : k),
+    );
   }
   return [];
 }
@@ -56,7 +69,9 @@ function cheminsEtCommandes(valeur, cle = '') {
     return /command|query|pattern|glob/i.test(cle) ? [valeur] : fichiersEcrits(valeur, cle);
   }
   if (valeur && typeof valeur === 'object') {
-    return Object.entries(valeur).flatMap(([k, v]) => cheminsEtCommandes(v, Array.isArray(valeur) ? cle : k));
+    return Object.entries(valeur).flatMap(([k, v]) =>
+      cheminsEtCommandes(v, Array.isArray(valeur) ? cle : k),
+    );
   }
   return [];
 }
@@ -95,9 +110,19 @@ function noterCheckReport(evenement, fichier) {
   }
 }
 
+function viseScoresBorne(evenement) {
+  const texte = normaliser(cheminsEtCommandes(lireParametres(evenement)).join('\n'));
+  if (!RESERVE_SCORES.test(texte)) return false;
+  if (SCORES_BORNE.test(texte)) return true;
+  const cwd = normaliser(String(evenement.cwd ?? ''));
+  return !DOSSIER_TEMP.test(texte) || CHANGEMENT_VERS_MCP.test(texte) || CWD_MCP.test(cwd);
+}
+
 function controlerAppel(evenement, texte, fichier) {
-  if (RESERVE_SCORES.test(normaliser(cheminsEtCommandes(lireParametres(evenement)).join('\n')))) {
-    refuser('Scores de la borne : les agents passent par les outils du serveur MCP, pas par le fichier.');
+  if (viseScoresBorne(evenement)) {
+    refuser(
+      'Scores de la borne : les agents passent par les outils du serveur MCP, pas par le fichier.',
+    );
   } else if (OUTIL_ECRITURE.test(String(evenement.tool_name ?? evenement.toolName ?? ''))) {
     const cibles = fichiersEcrits(lireParametres(evenement));
     if (RESERVE_STAGIAIRE.test(cibles.length ? normaliser(cibles.join('\n')) : texte)) {
@@ -110,7 +135,9 @@ function controlerAppel(evenement, texte, fichier) {
   } else if (RESERVE_MCP.test(texte)) {
     refuser('Fichier interne du serveur MCP : les agents ne doivent pas le lire.');
   } else if (RESERVE_CHECK_REPORT.test(texte) && !(fichier && fs.existsSync(fichier))) {
-    refuser('Fichier réservé à /check-report (référentiel ou rapport) : les agents ne doivent pas le lire.');
+    refuser(
+      'Fichier réservé à /check-report (référentiel ou rapport) : les agents ne doivent pas le lire.',
+    );
   }
 }
 

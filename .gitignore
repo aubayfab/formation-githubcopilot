@@ -17,3 +17,7 @@ npm-debug.log*
 # Système
 .DS_Store
 Thumbs.db
+
+# Python MCP server
+.venv/
+__pycache__/

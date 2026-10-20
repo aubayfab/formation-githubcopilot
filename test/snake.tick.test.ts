@@ -77,7 +77,8 @@ describe('tick', () => {
     ];
 
     for (const direction of parcours) {
-      etat = avancer(orienter(etat, direction));
+      // La pomme suivante est tirée au hasard : on la garde hors du parcours.
+      etat = { ...avancer(orienter(etat, direction)), pomme: { x: 7, y: 0 } };
     }
 
     expect(etat.issue).toBe('en-cours');

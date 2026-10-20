@@ -68,7 +68,7 @@ function paletteRetro(theme = 'neon') {
 
 function listerTemplatesJeux() {
   return [
-    'Modèles de mini-jeux disponibles dans le devkit :',
+    'Modèles de mini-jeux pris en charge dans le devkit :',
     '- snake (serpent, grille, accélération)',
     '- 2048 (fusion de tuiles)',
     '- pong (2 raquettes, 1 balle)',
