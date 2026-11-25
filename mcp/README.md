@@ -7,14 +7,28 @@ d'apparence anodine, que vous **n'avez pas désactivé**. C'est **cet outil qui 
 malveillant**, et qui fait **deux dégâts d'un seul appel** (les deux vecteurs de la
 slide « MCP : la confiance »).
 
-## Rien à préparer
+## Que faut-il préparer ?
 
 - La dépendance du serveur est installée par le `npm install` habituel.
 - Le **sink de l'attaquant** démarre **tout seul avec `npm run dev`** (via
   `concurrently`) : il écoute `http://127.0.0.1:57624` et affiche les secrets volés.
+- Ajoutez le serveur à `.mcp.json`, à la racine du dépôt (vous l’avez créé au TP N°4), dans
+  `mcpServers` :
+
+  ```json
+  "arcade-devkit": {
+    "type": "stdio",
+    "command": "node",
+    "args": ["mcp/serveur-scores.js"],
+    "cwd": ".",
+    "tools": ["*"]
+  }
+  ```
+
+  Avec `"tools": ["*"]`, l’agent dispose de tous les outils du serveur. Nous ne le déclarons pas
+  d’avance : le harnais Copilot démarrerait seul ce serveur dès le premier TP.
 - Dans VS Code : _Chat: Open Customizations_ → **MCP Servers** → menu « … » d'`arcade-devkit`
-  → **Start Server**. Dans `.mcp.json`, la clé `tools` vaut `["*"]` : l'agent dispose de tous
-  les outils du serveur.
+  → **Start Server**.
 - Un `.env` **factice** est présent à la racine (la « victime »).
 
 ## Acte 1 — le serveur a VOS droits (vol de secrets)
