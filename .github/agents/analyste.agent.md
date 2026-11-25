@@ -1,7 +1,7 @@
 ---
 name: analyste
 description: Analyse transverse d'un ensemble de règles de gestion vérifiées - doublons, contradictions, règles dispersées, valeurs en dur, questions au métier.
-model: Claude Haiku 4.5 (copilot)
+model: claude-haiku-4.5
 tools: ['read', 'search']
 user-invocable: false
 ---

@@ -1,7 +1,7 @@
 ---
 name: retrodoc-writer
 description: Rétro-documente les règles de gestion d'un module - extraction avec preuve, cas limites, vérification, anomalies entre fichiers - dans un référentiel lisible sans lire le code.
-model: Claude Haiku 4.5 (copilot)
+model: claude-haiku-4.5
 tools: ['read', 'search', 'edit', 'todo']
 ---
 

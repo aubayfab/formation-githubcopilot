@@ -1,7 +1,7 @@
 ---
 name: scanner-cas-limites
 description: Cherche, avec preuve, les règles de gestion cachées dans les cas limites d'un fichier source (égalités, abandons, enchaînements, mesures), en suivant ses appels si nécessaire.
-model: Claude Haiku 4.5 (copilot)
+model: claude-haiku-4.5
 tools: ['read', 'search']
 user-invocable: false
 ---

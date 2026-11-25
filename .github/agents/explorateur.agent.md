@@ -1,7 +1,7 @@
 ---
 name: explorateur
 description: Extrait, avec preuve, toutes les règles de gestion métier d'un fichier source.
-model: Claude Haiku 4.5 (copilot)
+model: claude-haiku-4.5
 tools: ['read', 'search']
 user-invocable: false
 ---

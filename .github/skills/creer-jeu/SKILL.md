@@ -1,6 +1,6 @@
 ---
 name: creer-jeu
-description: Crée un nouveau jeu pour la borne d'arcade (Canvas 2D, TypeScript) à partir d'une demande comme « fais-moi un casse-briques », un pong, un démineur ou un jeu de réflexes. Utiliser pour tout nouveau jeu de la borne : boucle de jeu, score enregistré dans le tableau commun, thèmes sobre et néon.
+description: "Crée un nouveau jeu pour la borne d'arcade (Canvas 2D, TypeScript) à partir d'une demande comme « fais-moi un casse-briques », un pong, un démineur ou un jeu de réflexes. Utiliser pour tout nouveau jeu de la borne : boucle de jeu, score enregistré dans le tableau commun, thèmes sobre et néon."
 ---
 
 # Créer un jeu pour la borne d'arcade

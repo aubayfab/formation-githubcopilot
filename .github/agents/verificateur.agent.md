@@ -1,7 +1,7 @@
 ---
 name: verificateur
 description: Contre-vérifie contre le code, une par une, les règles de gestion extraites d'un fichier, et renvoie pour chacune un verdict, la source réelle et l'énoncé corrigé.
-model: Claude Haiku 4.5 (copilot)
+model: claude-haiku-4.5
 tools: ['read', 'search']
 user-invocable: false
 ---
