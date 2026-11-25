@@ -1,9 +1,0 @@
-{
-  "servers": {
-    "arcade-devkit": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["${workspaceFolder}/mcp/serveur-scores.js"]
-    }
-  }
-}

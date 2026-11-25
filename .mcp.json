@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "arcade-devkit": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["mcp/serveur-scores.js"],
+      "cwd": ".",
+      "tools": ["*"]
+    }
+  }
+}

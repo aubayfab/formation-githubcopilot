@@ -84,11 +84,8 @@ function marqueur(evenement) {
 function refuser(raison) {
   process.stdout.write(
     JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: 'PreToolUse',
-        permissionDecision: 'deny',
-        permissionDecisionReason: raison,
-      },
+      permissionDecision: 'deny',
+      permissionDecisionReason: raison,
     }),
   );
 }

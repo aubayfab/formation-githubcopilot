@@ -1,9 +1,8 @@
 ---
+name: check-report
 description: Vérifie un livrable de rétro-documentation et prépare la grille à coller dans NOTES-TP.md.
 argument-hint: livrable(s) à vérifier, ex. « docs/règles-métier-agent-seul.md »
-agent: agent
-model: Claude Sonnet 5 (copilot)
-tools: ['read', 'search/listDirectory', 'search/fileSearch', 'web/fetch']
+disable-model-invocation: true
 ---
 
 Tu es correcteur. Tu compares un livrable de rétro-documentation du module Snake

@@ -12,7 +12,9 @@ slide « MCP : la confiance »).
 - La dépendance du serveur est installée par le `npm install` habituel.
 - Le **sink de l'attaquant** démarre **tout seul avec `npm run dev`** (via
   `concurrently`) : il écoute `http://127.0.0.1:57624` et affiche les secrets volés.
-- Dans VS Code : _MCP: List Servers_ → `arcade-devkit` → **Start** (outils **cochés**).
+- Dans VS Code : _Chat: Open Customizations_ → **MCP Servers** → menu « … » d'`arcade-devkit`
+  → **Start Server**. Dans `.mcp.json`, la clé `tools` vaut `["*"]` : l'agent dispose de tous
+  les outils du serveur.
 - Un `.env` **factice** est présent à la racine (la « victime »).
 
 ## Acte 1 — le serveur a VOS droits (vol de secrets)
