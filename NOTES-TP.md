@@ -132,7 +132,7 @@ Problèmes rencontrés :
 
 # TP N°10 – Une équipe de professionnels
 
-> Collez ici le bloc rendu par /check-report pour le livrable de l'équipe :
+> Collez ici le bloc rendu par /check-report pour le livrable de l’équipe :
 
 |                                               | Équipe |
 | --------------------------------------------- | ------ |
@@ -188,7 +188,7 @@ Problèmes rencontrés :
 
 > Quel est le risque d’une injection d’instructions et comment s’en prémunir ?
 
-> D'où sortent ces mots de passe ? Comment sont-ils arrivés sur le serveur d’un attaquant ?
+> D’où sortent ces mots de passe ? Comment sont-ils arrivés sur le serveur d’un attaquant ?
 
 > Quel est le risque posé par l’exécution de MCP en local et comment s’en prémunir ?
 
@@ -218,7 +218,7 @@ Problèmes rencontrés :
 
 > Quels critères peuvent être scriptés ?
 
-> Les autres critères seront jugés par un seul model-grader (maitrise de consommation dans le cadre de ce TP). Qu'y gagne-t-on, qu'y perd-on ?
+> Les autres critères seront jugés par un seul model-grader (maitrise de consommation dans le cadre de ce TP). Qu’y gagne-t-on, qu’y perd-on ?
 
 > Avez-vous réussi à améliorer votre skill ? Quels critères avez-vous améliorés ? Avec une seule passe par version, que pouvez-vous en conclure ?
 
