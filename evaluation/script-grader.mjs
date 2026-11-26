@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Script-grader du TP 16 : note sur 10 les deux critères qu'un script vérifie mieux qu'un modèle,
+ * Script-grader du TP 17 : note sur 10 les deux critères qu'un script vérifie mieux qu'un modèle,
  * parce qu'il faut exécuter du code ou prouver une absence. Voir README.md.
  *
  *   C9   la logique du jeu ne fait aucun appel au DOM
