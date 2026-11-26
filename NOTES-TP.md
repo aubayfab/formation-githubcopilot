@@ -202,7 +202,23 @@ Problèmes rencontrés :
 
 > Quelles modifications cette skill a-t-elle automatisées ?
 
-# TP N°15 – Faites votre propre MCP
+# TP N°15 – Une fonctionnalité pilotée par sa spec
+
+> Chaque choix tranché pendant l’interview figure-t-il dans SPEC.md ? Que deviendrait un choix absent dans la nouvelle session de l’étape 3 ?
+
+> Un score du lundi 0 h 30, heure de Paris, entre-t-il dans la nouvelle semaine ? Le précisez-vous dans SPEC.md ? Quelle date la borne enregistre-t-elle ?
+
+> Chaque exigence de SPEC.md a-t-elle son test dans le plan ? S’il en manque un, comment le faire ajouter avant l’implémentation ?
+
+> Pour chaque écart signalé, faut-il corriger le code ou la spec ?
+
+> Sur le seul diff de SPEC.md, le PO peut-il valider le changement ? Si vous aviez fait changer le code directement, que lirait l’agent dans SPEC.md à la session suivante ?
+
+> En mode Plan, l’agent consigne-t-il quelque part les points clarifiés avec vous ? Que resterait-il de ces choix dans le dépôt pour un changement comme celui de l’étape 5 ?
+
+Problèmes rencontrés :
+
+# TP N°16 – Faites votre propre MCP
 
 > Quel module serveur_scores.py importe-t-il ?
 
@@ -214,7 +230,7 @@ Problèmes rencontrés :
 
 Problèmes rencontrés :
 
-# TP N°16 – Évaluer et améliorer une skill
+# TP N°17 – Évaluer et améliorer une skill
 
 > Quels critères peuvent être scriptés ?
 
